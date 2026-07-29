@@ -25,7 +25,7 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "WebCostDz — Know your website cost in 2 minutes" },
       {
         property: "og:description",
-        content: "Instant website price estimation powered by AI, built for Algerian businesses.",
+        content: "Answer a few simple questions and get an instant website price range, timeline, complexity score and feature breakdown for your business in Algeria.",
       },
     ],
   }),
