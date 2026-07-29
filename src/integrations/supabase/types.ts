@@ -14,7 +14,84 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      ai_questions: {
+        Row: {
+          business_slug: string
+          created_at: string
+          id: string
+          questions_json: Json
+        }
+        Insert: {
+          business_slug: string
+          created_at?: string
+          id?: string
+          questions_json: Json
+        }
+        Update: {
+          business_slug?: string
+          created_at?: string
+          id?: string
+          questions_json?: Json
+        }
+        Relationships: []
+      }
+      estimates: {
+        Row: {
+          analysis_json: Json | null
+          answers_json: Json
+          business_type: string
+          company: string | null
+          complexity: string | null
+          created_at: string
+          duration: string | null
+          email: string | null
+          features_json: Json
+          full_name: string | null
+          id: string
+          maximum_price: number
+          minimum_price: number
+          phone: string | null
+          project_details: string | null
+          summary: string | null
+        }
+        Insert: {
+          analysis_json?: Json | null
+          answers_json?: Json
+          business_type: string
+          company?: string | null
+          complexity?: string | null
+          created_at?: string
+          duration?: string | null
+          email?: string | null
+          features_json?: Json
+          full_name?: string | null
+          id?: string
+          maximum_price?: number
+          minimum_price?: number
+          phone?: string | null
+          project_details?: string | null
+          summary?: string | null
+        }
+        Update: {
+          analysis_json?: Json | null
+          answers_json?: Json
+          business_type?: string
+          company?: string | null
+          complexity?: string | null
+          created_at?: string
+          duration?: string | null
+          email?: string | null
+          features_json?: Json
+          full_name?: string | null
+          id?: string
+          maximum_price?: number
+          minimum_price?: number
+          phone?: string | null
+          project_details?: string | null
+          summary?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
