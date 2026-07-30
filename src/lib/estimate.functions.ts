@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { calculatePrice, FEATURE_KEYS, OPTIONAL_ADDONS } from "./pricing";
+import { langSchema, LANG_NAMES } from "./lang";
 
 export type Question = {
   id: number;
@@ -23,6 +24,7 @@ export type Analysis = {
 const questionsInput = z.object({
   slug: z.string().min(1).max(60),
   businessName: z.string().min(1).max(80),
+  lang: langSchema,
 });
 
 export const getQuestions = createServerFn({ method: "POST" })
@@ -34,7 +36,7 @@ export const getQuestions = createServerFn({ method: "POST" })
     const cached = await supabaseAdmin
       .from("ai_questions")
       .select("questions_json")
-      .eq("business_slug", data.slug)
+      .eq("business_slug", `${data.slug}:${data.lang}`)
       .maybeSingle();
 
     if (cached.data?.questions_json) {
@@ -45,7 +47,8 @@ export const getQuestions = createServerFn({ method: "POST" })
       `You are an experienced software business analyst. Return JSON only in the shape {"questions": [...]}.
 Generate between 8 and 15 questions that help estimate the complexity of building a website for the selected business.
 Rules: use multiple-choice questions whenever possible; keep them simple for non-technical users; only include questions that affect pricing.
-Each question must contain: id (number), question (string), type ("radio" or "checkbox"), options (string array), weight (1-5), category (string).`,
+Each question must contain: id (number), question (string), type ("radio" or "checkbox"), options (string array), weight (1-5), category (string).
+IMPORTANT: write every question text, every option and every category in ${LANG_NAMES[data.lang]}. Keep the JSON keys in English.`,
       `Business type: ${data.businessName}`,
     );
 
@@ -60,7 +63,7 @@ Each question must contain: id (number), question (string), type ("radio" or "ch
 
     await supabaseAdmin
       .from("ai_questions")
-      .upsert({ business_slug: data.slug, questions_json: questions as never }, { onConflict: "business_slug" });
+      .upsert({ business_slug: `${data.slug}:${data.lang}`, questions_json: questions as never }, { onConflict: "business_slug" });
 
     return { questions };
   });
@@ -68,6 +71,7 @@ Each question must contain: id (number), question (string), type ("radio" or "ch
 const estimateInput = z.object({
   slug: z.string().min(1).max(60),
   businessName: z.string().min(1).max(80),
+  lang: langSchema,
   answers: z.array(
     z.object({
       question: z.string().max(400),
@@ -102,7 +106,8 @@ Always include "landing_page". Never mention or calculate prices.`,
       `You are a senior software architect. Analyze the project and return JSON only with keys:
 project_summary (string, 2-4 sentences), recommended_stack (string array), complexity (string),
 suggested_features (string array), development_phases (array of {name, description, duration}),
-possible_future_features (string array). Do NOT calculate or mention any price.`,
+possible_future_features (string array). Do NOT calculate or mention any price.
+IMPORTANT: write all human-readable text (project_summary, complexity, suggested_features, phase names/descriptions/durations, future features) in ${LANG_NAMES[data.lang]}. Keep JSON keys in English and keep technology names as-is.`,
       `Business type: ${data.businessName}\nSelected features: ${pricing.features.map((f) => f.label).join(", ")}\nComplexity: ${pricing.complexity}\nTimeline: ${pricing.duration}\n${answersText}`,
     );
 

@@ -3,7 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { useState } from "react";
 import { ArrowRight, Compass, Rocket, Sparkles } from "lucide-react";
 import { useEstimateStore } from "@/store/estimate";
-import { ThemeToggle } from "@/components/site-chrome";
+import { LanguageSwitcher, ThemeToggle } from "@/components/site-chrome";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/onboarding")({
   head: () => ({
@@ -17,31 +18,21 @@ export const Route = createFileRoute("/onboarding")({
   component: Onboarding,
 });
 
-const screens = [
-  {
-    icon: Sparkles,
-    title: "Welcome to WebCostDz",
-    text: "Estimate the price of your future website quickly and easily.",
-    cta: "Continue",
-  },
-  {
-    icon: Compass,
-    title: "How it works",
-    text: "Choose your business type. Answer a few questions. Receive an instant estimate.",
-    cta: "Continue",
-  },
-  {
-    icon: Rocket,
-    title: "Ready?",
-    text: "Let's discover your project.",
-    cta: "Start",
-  },
-];
+const icons = [Sparkles, Compass, Rocket];
 
 function Onboarding() {
   const [index, setIndex] = useState(0);
   const navigate = useNavigate();
   const setOnboarded = useEstimateStore((s) => s.setOnboarded);
+  const { t, dir } = useI18n();
+  const sign = dir === "rtl" ? -1 : 1;
+
+  const screens = icons.map((icon, i) => ({
+    icon,
+    title: t(`onb.${i + 1}.title`),
+    text: t(`onb.${i + 1}.text`),
+    cta: i === icons.length - 1 ? t("onb.start") : t("onb.continue"),
+  }));
   const screen = screens[index];
 
   const next = () => {
@@ -63,9 +54,12 @@ function Onboarding() {
           onClick={() => navigate({ to: "/" })}
           className="text-sm text-muted-foreground transition-colors hover:text-foreground"
         >
-          Back to home
+          {t("onb.back")}
         </button>
-        <ThemeToggle />
+        <div className="flex items-center gap-2">
+          <LanguageSwitcher />
+          <ThemeToggle />
+        </div>
       </div>
 
       <main className="relative flex flex-1 items-center justify-center px-5 pb-16">
@@ -73,9 +67,9 @@ function Onboarding() {
           <AnimatePresence mode="wait">
             <motion.div
               key={index}
-              initial={{ opacity: 0, x: 40 }}
+              initial={{ opacity: 0, x: 40 * sign }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -40 }}
+              exit={{ opacity: 0, x: -40 * sign }}
               transition={{ duration: 0.35, ease: "easeOut" }}
               className="glass rounded-[2rem] p-8 text-center"
             >
@@ -103,7 +97,7 @@ function Onboarding() {
             onClick={next}
             className="brand-gradient shadow-glow mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
           >
-            {screen.cta} <ArrowRight className="size-4" />
+            {screen.cta} <ArrowRight className="rtl-flip size-4" />
           </button>
 
           {index < screens.length - 1 && (
@@ -115,7 +109,7 @@ function Onboarding() {
               }}
               className="mt-4 w-full text-center text-xs text-muted-foreground transition-colors hover:text-foreground"
             >
-              Skip introduction
+              {t("onb.skip")}
             </button>
           )}
         </div>

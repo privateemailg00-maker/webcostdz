@@ -12,6 +12,7 @@ import {
   ChevronDown,
 } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -32,29 +33,23 @@ export const Route = createFileRoute("/")({
   component: Landing,
 });
 
-const features = [
-  { icon: Wallet, title: "Instant price range", text: "A realistic minimum and maximum budget based on the features you actually need." },
-  { icon: Timer, title: "Delivery timeline", text: "See how many days your project takes, from a small landing page to an enterprise platform." },
-  { icon: ListChecks, title: "Feature breakdown", text: "Every included module listed clearly, so you know exactly what you are paying for." },
-  { icon: Bot, title: "AI questionnaire", text: "Questions adapt to your business type — a bakery is never asked about patient records." },
-  { icon: Layers, title: "Project roadmap", text: "Development phases and a recommended tech stack, generated for your scope." },
-  { icon: ShieldCheck, title: "Transparent pricing", text: "Prices come from a fixed pricing engine, never invented by the AI." },
-];
-
-const steps = [
-  { n: "01", title: "Pick your business", text: "Choose from 40+ business types, or describe a custom one." },
-  { n: "02", title: "Answer the questions", text: "8 to 15 simple multiple-choice questions, one at a time." },
-  { n: "03", title: "Get your estimate", text: "Price, duration, complexity, features and a full project summary." },
-];
-
-const faqs = [
-  { q: "How accurate is the estimate?", a: "The range is calculated from a fixed feature-based pricing engine used on real projects. It is an informed budget range, not a signed contract." },
-  { q: "Do I need to talk to a developer?", a: "No. The whole estimate runs on its own. If you want an exact quote, you can send your details at the end." },
-  { q: "Is my data stored?", a: "Your answers and estimate are saved so we can prepare a precise proposal if you request one." },
-  { q: "Which currency is used?", a: "Prices are shown in US dollars, the standard reference used for web development budgets." },
-];
+const featureIcons = [Wallet, Timer, ListChecks, Bot, Layers, ShieldCheck];
 
 function Landing() {
+  const { t } = useI18n();
+
+  const features = featureIcons.map((icon, i) => ({
+    icon,
+    title: t(`home.f${i + 1}.title`),
+    text: t(`home.f${i + 1}.text`),
+  }));
+  const steps = [1, 2, 3].map((n) => ({
+    n: `0${n}`,
+    title: t(`home.s${n}.title`),
+    text: t(`home.s${n}.text`),
+  }));
+  const faqs = [1, 2, 3, 4].map((n) => ({ q: t(`home.q${n}`), a: t(`home.a${n}`) }));
+
   return (
     <div className="min-h-screen">
       <SiteHeader />
@@ -70,7 +65,7 @@ function Landing() {
               className="glass mx-auto inline-flex items-center gap-2 rounded-full px-4 py-1.5 text-xs font-medium text-muted-foreground"
             >
               <Sparkles className="size-3.5 text-accent" />
-              AI-powered estimation for Algerian businesses
+              {t("home.badge")}
             </motion.div>
 
             <motion.h1
@@ -79,7 +74,7 @@ function Landing() {
               transition={{ duration: 0.6, delay: 0.05 }}
               className="mx-auto mt-7 max-w-3xl text-4xl leading-[1.08] font-extrabold tracking-tight sm:text-6xl"
             >
-              Know the cost of your website in <span className="gradient-text">less than 2 minutes</span>.
+              {t("home.title.a")} <span className="gradient-text">{t("home.title.b")}</span>.
             </motion.h1>
 
             <motion.p
@@ -88,8 +83,7 @@ function Landing() {
               transition={{ duration: 0.6, delay: 0.12 }}
               className="mx-auto mt-6 max-w-2xl text-base text-muted-foreground sm:text-lg"
             >
-              Answer a few simple questions and receive an estimated price, timeline, project complexity and
-              feature breakdown.
+              {t("home.subtitle")}
             </motion.p>
 
             <motion.div
@@ -102,13 +96,13 @@ function Landing() {
                 to="/onboarding"
                 className="brand-gradient shadow-glow inline-flex w-full items-center justify-center gap-2 rounded-full px-7 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 sm:w-auto"
               >
-                Start estimation <ArrowRight className="size-4" />
+                {t("home.cta.primary")} <ArrowRight className="rtl-flip size-4" />
               </Link>
               <a
                 href="#how-it-works"
                 className="glass inline-flex w-full items-center justify-center rounded-full px-7 py-3.5 text-sm font-semibold transition-colors hover:text-primary sm:w-auto"
               >
-                Learn more
+                {t("home.cta.secondary")}
               </a>
             </motion.div>
 
@@ -119,11 +113,11 @@ function Landing() {
               className="glass mx-auto mt-16 grid max-w-3xl grid-cols-1 gap-4 rounded-3xl p-6 sm:grid-cols-3"
             >
               {[
-                { label: "Estimated price", value: "$1,400 – $1,700" },
-                { label: "Estimated time", value: "22 days" },
-                { label: "Complexity", value: "Medium" },
+                { label: t("home.stat.price"), value: "$1,400 – $1,700" },
+                { label: t("home.stat.time"), value: t("home.stat.time.value") },
+                { label: t("home.stat.complexity"), value: t("home.stat.complexity.value") },
               ].map((item) => (
-                <div key={item.label} className="rounded-2xl bg-muted/50 p-5 text-left">
+                <div key={item.label} className="rounded-2xl bg-muted/50 p-5 text-start">
                   <p className="text-xs tracking-wide text-muted-foreground uppercase">{item.label}</p>
                   <p className="mt-2 text-xl font-bold">{item.value}</p>
                 </div>
@@ -133,12 +127,8 @@ function Landing() {
         </section>
 
         <section className="mx-auto w-full max-w-6xl px-5 py-20">
-          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">
-            Everything you need to plan the budget
-          </h2>
-          <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">
-            WebCostDz turns a vague idea into a clear, scoped project you can act on.
-          </p>
+          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">{t("home.features.title")}</h2>
+          <p className="mx-auto mt-3 max-w-xl text-center text-muted-foreground">{t("home.features.subtitle")}</p>
           <div className="mt-12 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
               <motion.div
@@ -161,7 +151,7 @@ function Landing() {
 
         <section id="how-it-works" className="mx-auto w-full max-w-6xl px-5 py-20">
           <div className="glass overflow-hidden rounded-[2rem] p-8 sm:p-12">
-            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">How it works</h2>
+            <h2 className="text-3xl font-bold tracking-tight sm:text-4xl">{t("home.how.title")}</h2>
             <div className="mt-10 grid gap-8 sm:grid-cols-3">
               {steps.map((s) => (
                 <div key={s.n} className="relative">
@@ -175,7 +165,7 @@ function Landing() {
         </section>
 
         <section className="mx-auto w-full max-w-3xl px-5 py-20">
-          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">Frequently asked questions</h2>
+          <h2 className="text-center text-3xl font-bold tracking-tight sm:text-4xl">{t("home.faq.title")}</h2>
           <div className="mt-10 space-y-3">
             {faqs.map((f) => (
               <details key={f.q} className="glass group rounded-2xl p-5">
@@ -193,7 +183,7 @@ function Landing() {
               to="/onboarding"
               className="brand-gradient shadow-glow inline-flex items-center justify-center gap-2 rounded-full px-8 py-4 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
             >
-              Start my estimation <ArrowRight className="size-4" />
+              {t("home.cta.final")} <ArrowRight className="rtl-flip size-4" />
             </Link>
           </div>
         </section>
