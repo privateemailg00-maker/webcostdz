@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { calculatePrice, FEATURE_KEYS, OPTIONAL_ADDONS } from "./pricing";
+import { langSchema, LANG_NAMES } from "./lang";
 
 export type Question = {
   id: number;
@@ -19,10 +20,6 @@ export type Analysis = {
   development_phases: { name: string; description: string; duration: string }[];
   possible_future_features: string[];
 };
-
-const langSchema = z.enum(["ar", "fr", "en"]).default("ar");
-
-const LANG_NAMES: Record<string, string> = { ar: "Arabic", fr: "French", en: "English" };
 
 const questionsInput = z.object({
   slug: z.string().min(1).max(60),
