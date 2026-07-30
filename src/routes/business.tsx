@@ -6,6 +6,8 @@ import { Search } from "lucide-react";
 import { BUSINESSES } from "@/lib/businesses";
 import { useEstimateStore } from "@/store/estimate";
 import { SiteHeader } from "@/components/site-chrome";
+import { useI18n } from "@/lib/i18n";
+import { localizeBusiness } from "@/lib/i18n/content";
 
 export const Route = createFileRoute("/business")({
   head: () => ({
@@ -30,14 +32,24 @@ function BusinessSelection() {
   const [query, setQuery] = useState("");
   const navigate = useNavigate();
   const selectBusiness = useEstimateStore((s) => s.selectBusiness);
+  const { t, lang } = useI18n();
+
+  const localized = useMemo(
+    () => BUSINESSES.map((b) => ({ ...b, ...localizeBusiness(lang, b), englishName: b.name })),
+    [lang],
+  );
 
   const filtered = useMemo(() => {
     const q = query.trim().toLowerCase();
-    if (!q) return BUSINESSES;
-    return BUSINESSES.filter(
-      (b) => b.name.toLowerCase().includes(q) || b.description.toLowerCase().includes(q) || b.group.toLowerCase().includes(q),
+    if (!q) return localized;
+    return localized.filter(
+      (b) =>
+        b.name.toLowerCase().includes(q) ||
+        b.englishName.toLowerCase().includes(q) ||
+        b.description.toLowerCase().includes(q) ||
+        b.group.toLowerCase().includes(q),
     );
-  }, [query]);
+  }, [query, localized]);
 
   return (
     <div className="min-h-screen">
@@ -45,18 +57,16 @@ function BusinessSelection() {
       <main className="relative mx-auto w-full max-w-6xl px-5 pt-12 pb-24">
         <div className="glow-bg pointer-events-none absolute inset-x-0 top-0 h-80" />
         <div className="relative text-center">
-          <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">Step 1 of 3</p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">What is your business?</h1>
-          <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground">
-            We tailor every question and every feature to your industry.
-          </p>
+          <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">{t("biz.step")}</p>
+          <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{t("biz.title")}</h1>
+          <p className="mx-auto mt-3 max-w-lg text-sm text-muted-foreground">{t("biz.subtitle")}</p>
 
           <div className="glass mx-auto mt-8 flex max-w-md items-center gap-3 rounded-full px-5 py-3">
             <Search className="size-4 shrink-0 text-muted-foreground" />
             <input
               value={query}
               onChange={(e) => setQuery(e.target.value.slice(0, 60))}
-              placeholder="Search business type…"
+              placeholder={t("biz.search")}
               className="w-full bg-transparent text-sm outline-none placeholder:text-muted-foreground"
             />
           </div>
@@ -75,7 +85,7 @@ function BusinessSelection() {
                 selectBusiness(b.slug, b.name);
                 navigate({ to: "/questions" });
               }}
-              className="glass group rounded-3xl p-5 text-left transition-colors hover:border-primary/50"
+              className="glass group rounded-3xl p-5 text-start transition-colors hover:border-primary/50"
             >
               <span className="brand-gradient inline-flex size-11 items-center justify-center rounded-2xl text-primary-foreground">
                 <BusinessIcon name={b.icon} />
@@ -88,9 +98,7 @@ function BusinessSelection() {
         </div>
 
         {filtered.length === 0 && (
-          <p className="relative mt-16 text-center text-sm text-muted-foreground">
-            No match. Try another word, or pick “Custom Business”.
-          </p>
+          <p className="relative mt-16 text-center text-sm text-muted-foreground">{t("biz.empty")}</p>
         )}
       </main>
     </div>
