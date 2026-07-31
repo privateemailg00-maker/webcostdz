@@ -9,7 +9,9 @@ export function useTheme() {
 
   useEffect(() => {
     const stored = localStorage.getItem("webcostdz-theme");
-    const isDark = stored ? stored === "dark" : window.matchMedia("(prefers-color-scheme: dark)").matches;
+    const isDark = stored
+      ? stored === "dark"
+      : window.matchMedia("(prefers-color-scheme: dark)").matches;
     setDark(isDark);
     document.documentElement.classList.toggle("dark", isDark);
   }, []);
@@ -34,7 +36,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={toggle}
       aria-label="Toggle color theme"
       className={cn(
-        "inline-flex size-10 items-center justify-center border-2 border-foreground bg-background text-foreground transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_var(--foreground)]",
+        "inline-flex size-10 items-center justify-center border-[3px] border-foreground bg-card text-foreground transition-transform hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[4px_4px_0_0_var(--color-primary)]",
         className,
       )}
     >
@@ -64,7 +66,7 @@ export function LanguageSwitcher({ className }: { className?: string }) {
         aria-label={t("lang.label")}
         aria-haspopup="listbox"
         aria-expanded={open}
-        className="inline-flex h-10 items-center gap-2 rounded-full border border-border bg-card/60 px-3 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground"
+        className="inline-flex h-10 items-center gap-2 border-[3px] border-foreground bg-card px-3 font-mono text-xs font-bold tracking-widest uppercase transition-transform hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[4px_4px_0_0_var(--color-primary)]"
       >
         <Languages className="size-4" />
         <span>{active.native}</span>
@@ -72,10 +74,10 @@ export function LanguageSwitcher({ className }: { className?: string }) {
       {open && (
         <ul
           role="listbox"
-          className="absolute end-0 z-50 mt-2 w-36 overflow-hidden rounded-2xl border border-border bg-popover p-1 shadow-lg"
+          className="absolute end-0 z-50 mt-2 w-36 border-[3px] border-foreground bg-popover shadow-[6px_6px_0_0_var(--color-foreground)]"
         >
           {LANGS.map((l) => (
-            <li key={l.code}>
+            <li key={l.code} className="border-b-[3px] border-foreground last:border-b-0">
               <button
                 type="button"
                 role="option"
@@ -85,8 +87,8 @@ export function LanguageSwitcher({ className }: { className?: string }) {
                   setOpen(false);
                 }}
                 className={cn(
-                  "w-full rounded-xl px-3 py-2 text-start text-sm transition-colors hover:bg-muted",
-                  l.code === lang ? "font-semibold text-primary" : "text-foreground",
+                  "w-full px-3 py-2 text-start text-sm font-bold uppercase transition-colors hover:bg-primary hover:text-primary-foreground",
+                  l.code === lang ? "bg-foreground text-background" : "text-foreground",
                 )}
               >
                 {l.native}
@@ -105,11 +107,11 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 w-full border-b-[3px] border-foreground bg-background">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
         <Link to="/" className="flex items-center gap-2.5">
-          <span className="inline-flex size-9 items-center justify-center border-2 border-foreground bg-foreground text-background">
+          <span className="inline-flex size-9 items-center justify-center border-[3px] border-foreground bg-foreground text-background">
             <Gauge className="size-4" />
           </span>
           <span className="font-mono text-base font-bold tracking-tight uppercase">
-            WebCost<span className="text-[#FF3B1F]">Dz</span>
+            WebCost<span className="text-primary">Dz</span>
           </span>
         </Link>
         <div className="flex items-center gap-2">
@@ -117,7 +119,7 @@ export function SiteHeader() {
           <ThemeToggle />
           <Link
             to="/onboarding"
-            className="hidden items-center border-2 border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold tracking-widest text-background uppercase transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#FF3B1F] sm:inline-flex"
+            className="hidden items-center border-[3px] border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold tracking-widest text-background uppercase transition-transform hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[4px_4px_0_0_var(--color-primary)] sm:inline-flex"
           >
             {t("nav.start")}
           </Link>
@@ -130,14 +132,16 @@ export function SiteHeader() {
 export function SiteFooter() {
   const { t } = useI18n();
   return (
-    <footer className="border-t border-border/60 py-10">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-5 text-sm text-muted-foreground sm:flex-row">
-        <p>© {new Date().getFullYear()} {t("footer.rights")}</p>
+    <footer className="border-t-[3px] border-foreground bg-foreground py-10 text-background">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-5 font-mono text-xs tracking-widest uppercase sm:flex-row">
+        <p>
+          © {new Date().getFullYear()} {t("footer.rights")}
+        </p>
         <div className="flex gap-5">
-          <Link to="/onboarding" className="transition-colors hover:text-foreground">
+          <Link to="/onboarding" className="border-b-[3px] border-primary pb-0.5">
             {t("footer.estimate")}
           </Link>
-          <a href="mailto:hello@webcostdz.com" className="transition-colors hover:text-foreground">
+          <a href="mailto:hello@webcostdz.com" className="border-b-[3px] border-primary pb-0.5">
             {t("footer.contact")}
           </a>
         </div>
