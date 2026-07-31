@@ -33,64 +33,59 @@
   --color-ring: var(--ring);
   --color-surface: var(--surface);
   --color-surface-foreground: var(--surface-foreground);
-  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Space Grotesk", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, monospace;
 }
 
 :root {
-  --radius: 1rem;
-  --background: oklch(0.995 0.003 250);
-  --foreground: oklch(0.19 0.03 265);
+  --radius: 0rem;
+  /* Brutalist paper / ink / stamp */
+  --background: oklch(0.93 0.017 88);
+  --foreground: oklch(0.18 0 0);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.19 0.03 265);
+  --card-foreground: oklch(0.18 0 0);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.19 0.03 265);
-  --primary: oklch(0.55 0.22 264);
-  --primary-foreground: oklch(0.99 0.005 250);
-  --secondary: oklch(0.52 0.25 295);
-  --secondary-foreground: oklch(0.99 0.005 250);
-  --accent: oklch(0.7 0.16 162);
-  --accent-foreground: oklch(0.2 0.05 165);
-  --muted: oklch(0.965 0.008 255);
-  --muted-foreground: oklch(0.52 0.03 258);
-  --surface: oklch(1 0 0 / 70%);
-  --surface-foreground: oklch(0.19 0.03 265);
-  --destructive: oklch(0.58 0.23 27);
-  --destructive-foreground: oklch(0.99 0.005 250);
-  --border: oklch(0.91 0.012 255);
-  --input: oklch(0.91 0.012 255);
-  --ring: oklch(0.55 0.22 264);
+  --popover-foreground: oklch(0.18 0 0);
+  --primary: oklch(0.64 0.24 32);
+  --primary-foreground: oklch(1 0 0);
+  --secondary: oklch(0.18 0 0);
+  --secondary-foreground: oklch(0.93 0.017 88);
+  --accent: oklch(0.64 0.24 32);
+  --accent-foreground: oklch(1 0 0);
+  --muted: oklch(0.89 0.016 88);
+  --muted-foreground: oklch(0.42 0.008 88);
+  --surface: oklch(1 0 0);
+  --surface-foreground: oklch(0.18 0 0);
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(1 0 0);
+  --border: oklch(0.18 0 0);
+  --input: oklch(0.18 0 0);
+  --ring: oklch(0.64 0.24 32);
 
-  --gradient-brand: linear-gradient(120deg, oklch(0.55 0.22 264), oklch(0.52 0.25 295));
-  --gradient-glow: radial-gradient(
-    60% 60% at 50% 0%,
-    color-mix(in oklab, var(--primary) 22%, transparent),
-    transparent 70%
-  );
-  --shadow-soft: 0 1px 2px oklch(0.2 0.04 265 / 6%), 0 12px 32px -12px oklch(0.2 0.04 265 / 18%);
-  --shadow-glow: 0 20px 60px -20px color-mix(in oklab, var(--primary) 55%, transparent);
+  --gradient-brand: none;
+  --shadow-soft: 6px 6px 0 0 var(--foreground);
+  --shadow-glow: 6px 6px 0 0 var(--primary);
 }
 
 .dark {
-  --background: oklch(0.16 0.024 265);
-  --foreground: oklch(0.97 0.006 250);
-  --card: oklch(0.21 0.028 265);
-  --card-foreground: oklch(0.97 0.006 250);
-  --popover: oklch(0.21 0.028 265);
-  --popover-foreground: oklch(0.97 0.006 250);
-  --primary: oklch(0.65 0.19 264);
-  --primary-foreground: oklch(0.14 0.03 265);
-  --secondary: oklch(0.62 0.21 295);
-  --secondary-foreground: oklch(0.14 0.03 265);
-  --accent: oklch(0.75 0.16 162);
-  --accent-foreground: oklch(0.16 0.04 165);
-  --muted: oklch(0.26 0.028 265);
-  --muted-foreground: oklch(0.72 0.02 258);
-  --surface: oklch(0.24 0.03 265 / 65%);
-  --surface-foreground: oklch(0.97 0.006 250);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 14%);
-  --ring: oklch(0.65 0.19 264);
-  --shadow-soft: 0 1px 2px oklch(0 0 0 / 40%), 0 18px 40px -18px oklch(0 0 0 / 70%);
+  --background: oklch(0.18 0 0);
+  --foreground: oklch(0.93 0.017 88);
+  --card: oklch(0.24 0 0);
+  --card-foreground: oklch(0.93 0.017 88);
+  --popover: oklch(0.24 0 0);
+  --popover-foreground: oklch(0.93 0.017 88);
+  --primary: oklch(0.68 0.23 32);
+  --primary-foreground: oklch(0.15 0 0);
+  --secondary: oklch(0.93 0.017 88);
+  --secondary-foreground: oklch(0.18 0 0);
+  --accent: oklch(0.68 0.23 32);
+  --muted: oklch(0.26 0 0);
+  --muted-foreground: oklch(0.76 0.01 88);
+  --surface: oklch(0.24 0 0);
+  --surface-foreground: oklch(0.93 0.017 88);
+  --border: oklch(0.93 0.017 88);
+  --input: oklch(0.93 0.017 88);
+  --ring: oklch(0.68 0.23 32);
 }
 
 @layer base {
@@ -106,40 +101,86 @@
   }
 
   ::selection {
-    background: color-mix(in oklab, var(--primary) 30%, transparent);
+    background: var(--primary);
+    color: var(--primary-foreground);
   }
 }
 
+/* ---------- Brutalist utilities ---------- */
+
+@utility brut {
+  border: 3px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+}
+
+@utility brut-shadow {
+  box-shadow: 6px 6px 0 0 var(--color-foreground);
+}
+
+@utility brut-shadow-stamp {
+  box-shadow: 6px 6px 0 0 var(--color-primary);
+}
+
+@utility brut-lift {
+  transition:
+    transform 0.15s ease,
+    box-shadow 0.15s ease;
+  &:hover {
+    transform: translate(-3px, -3px);
+    box-shadow: 8px 8px 0 0 var(--color-foreground);
+  }
+}
+
+@utility brut-grid {
+  background-image:
+    repeating-linear-gradient(
+      0deg,
+      color-mix(in oklab, var(--foreground) 100%, transparent) 0,
+      color-mix(in oklab, var(--foreground) 100%, transparent) 1px,
+      transparent 1px,
+      transparent 28px
+    ),
+    repeating-linear-gradient(
+      90deg,
+      color-mix(in oklab, var(--foreground) 100%, transparent) 0,
+      color-mix(in oklab, var(--foreground) 100%, transparent) 1px,
+      transparent 1px,
+      transparent 28px
+    );
+  opacity: 0.05;
+}
+
+/* Legacy aliases kept so older markup still reads brutalist */
 @utility glass {
-  background: var(--surface);
-  backdrop-filter: blur(16px) saturate(140%);
-  border: 1px solid color-mix(in oklab, var(--border) 90%, transparent);
-  box-shadow: var(--shadow-soft);
+  border: 3px solid var(--color-border);
+  background: var(--color-card);
+  color: var(--color-card-foreground);
+  box-shadow: 6px 6px 0 0 var(--color-foreground);
 }
 
 @utility gradient-text {
-  background: var(--gradient-brand);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  color: var(--color-primary);
 }
 
 @utility brand-gradient {
-  background: var(--gradient-brand);
+  background: var(--color-primary);
+  color: var(--color-primary-foreground);
 }
 
 @utility glow-bg {
-  background: var(--gradient-glow);
+  background: none;
 }
 
 @utility shadow-glow {
-  box-shadow: var(--shadow-glow);
+  box-shadow: 6px 6px 0 0 var(--color-primary);
 }
 
 html[dir="rtl"] {
-  font-family: "Cairo", "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  font-family: "Cairo", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
 }
 
 html[dir="rtl"] .rtl-flip {
   transform: scaleX(-1);
 }
+
