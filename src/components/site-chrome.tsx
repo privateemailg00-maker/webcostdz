@@ -33,7 +33,7 @@ export function ThemeToggle({ className }: { className?: string }) {
       onClick={toggle}
       aria-label="Toggle color theme"
       className={cn(
-        "inline-flex size-10 items-center justify-center rounded-full border border-border bg-card/60 text-muted-foreground transition-colors hover:text-foreground",
+        "inline-flex size-10 items-center justify-center border-2 border-foreground bg-background text-foreground transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_var(--foreground)]",
         className,
       )}
     >
@@ -44,21 +44,21 @@ export function ThemeToggle({ className }: { className?: string }) {
 
 export function SiteHeader() {
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/70 backdrop-blur-xl">
+    <header className="sticky top-0 z-40 w-full border-b-[3px] border-foreground bg-background">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
-        <Link to="/" className="flex items-center gap-2">
-          <span className="brand-gradient inline-flex size-8 items-center justify-center rounded-xl text-primary-foreground">
+        <Link to="/" className="flex items-center gap-2.5">
+          <span className="inline-flex size-9 items-center justify-center border-2 border-foreground bg-foreground text-background">
             <Gauge className="size-4" />
           </span>
-          <span className="text-base font-semibold tracking-tight">
-            WebCost<span className="gradient-text">Dz</span>
+          <span className="font-mono text-base font-bold tracking-tight uppercase">
+            WebCost<span className="text-[#FF3B1F]">Dz</span>
           </span>
         </Link>
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-3">
           <ThemeToggle />
           <Link
             to="/onboarding"
-            className="brand-gradient hidden rounded-full px-4 py-2 text-sm font-medium text-primary-foreground transition-opacity hover:opacity-90 sm:inline-flex"
+            className="hidden items-center border-2 border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold tracking-widest text-background uppercase transition-transform hover:-translate-x-0.5 hover:-translate-y-0.5 hover:shadow-[3px_3px_0_0_#FF3B1F] sm:inline-flex"
           >
             Start estimation
           </Link>
@@ -70,14 +70,14 @@ export function SiteHeader() {
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-border/60 py-10">
-      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-4 px-5 text-sm text-muted-foreground sm:flex-row">
+    <footer className="border-t-[3px] border-foreground py-10">
+      <div className="mx-auto flex w-full max-w-6xl flex-col items-center justify-between gap-5 px-5 font-mono text-xs tracking-wide text-muted-foreground uppercase sm:flex-row">
         <p>© {new Date().getFullYear()} WebCostDz — website cost estimation for Algerian businesses.</p>
-        <div className="flex gap-5">
-          <Link to="/onboarding" className="transition-colors hover:text-foreground">
+        <div className="flex gap-6">
+          <Link to="/onboarding" className="border-b-2 border-transparent pb-0.5 transition-colors hover:border-foreground hover:text-foreground">
             Estimate
           </Link>
-          <a href="mailto:hello@webcostdz.com" className="transition-colors hover:text-foreground">
+          <a href="mailto:hello@webcostdz.com" className="border-b-2 border-transparent pb-0.5 transition-colors hover:border-foreground hover:text-foreground">
             Contact
           </a>
         </div>
