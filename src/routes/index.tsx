@@ -30,84 +30,14 @@ export const Route = createFileRoute("/")({
         content:
           "Answer a few simple questions and get an instant website price range, timeline, complexity score and feature breakdown for your business in Algeria.",
       },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Landing,
 });
 
-const INK = "#101010";
-const PAPER = "#EFEBE1";
-const STAMP = "#FF3B1F";
-
-const features = [
-  {
-    icon: Calculator,
-    title: "Instant price range",
-    text: "A realistic minimum and maximum, built from the features you actually need — not a guess.",
-  },
-  {
-    icon: Timer,
-    title: "Delivery timeline",
-    text: "See how many days your project takes, from a landing page to an enterprise platform.",
-  },
-  {
-    icon: ListChecks,
-    title: "Feature breakdown",
-    text: "Every included module, listed line by line, so you know exactly what you're paying for.",
-  },
-  {
-    icon: Bot,
-    title: "AI questionnaire",
-    text: "Questions adapt to your business. A bakery is never asked about patient records.",
-  },
-  {
-    icon: Layers,
-    title: "Project roadmap",
-    text: "Development phases and a recommended tech stack, generated for your scope.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "Fixed pricing engine",
-    text: "Prices come from a fixed rate table, never invented on the spot by the AI.",
-  },
-];
-
-const steps = [
-  {
-    n: "01",
-    title: "Pick your business",
-    text: "Choose from 40+ business types, or describe a custom one.",
-  },
-  {
-    n: "02",
-    title: "Answer the questions",
-    text: "8 to 15 simple multiple-choice questions, one at a time.",
-  },
-  {
-    n: "03",
-    title: "Get your estimate",
-    text: "Price, duration, complexity, features — the full breakdown.",
-  },
-];
-
-const faqs = [
-  {
-    q: "How accurate is the estimate?",
-    a: "The range comes from a fixed feature-based pricing engine used on real projects. It's an informed budget range, not a signed contract.",
-  },
-  {
-    q: "Do I need to talk to a developer?",
-    a: "No. The whole estimate runs on its own. If you want an exact quote, you can send your details at the end.",
-  },
-  {
-    q: "Is my data stored?",
-    a: "Your answers and estimate are saved so we can prepare a precise proposal if you request one.",
-  },
-  {
-    q: "Which currency is used?",
-    a: "Prices are shown in US dollars, the standard reference for web development budgets.",
-  },
-];
+const featureIcons = [Calculator, Timer, ListChecks, Bot, Layers, ShieldCheck];
 
 function Landing() {
   const { t } = useI18n();
@@ -125,75 +55,48 @@ function Landing() {
   const faqs = [1, 2, 3, 4].map((n) => ({ q: t(`home.q${n}`), a: t(`home.a${n}`) }));
 
   return (
-    <div className="min-h-screen" style={{ backgroundColor: PAPER, color: INK }}>
+    <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
 
       <main>
         {/* HERO */}
-        <section className="relative overflow-hidden border-b-[3px]" style={{ borderColor: INK }}>
-          <div
-            className="pointer-events-none absolute inset-0 opacity-[0.05]"
-            style={{
-              backgroundImage:
-                "repeating-linear-gradient(0deg, #101010 0, #101010 1px, transparent 1px, transparent 28px), repeating-linear-gradient(90deg, #101010 0, #101010 1px, transparent 1px, transparent 28px)",
-            }}
-          />
+        <section className="relative overflow-hidden border-b-[3px] border-foreground">
+          <div className="brut-grid pointer-events-none absolute inset-0" />
 
           <div className="relative mx-auto grid w-full max-w-6xl gap-14 px-5 pt-16 pb-20 lg:grid-cols-[1.1fr_0.9fr] lg:items-center lg:pt-24 lg:pb-28">
             <div>
-              <div
-                className="inline-flex items-center gap-2 border-[3px] px-3 py-1 font-mono text-[11px] font-bold tracking-[0.15em] uppercase"
-                style={{ borderColor: INK, backgroundColor: "#fff" }}
-              >
-                <Receipt className="size-3.5" style={{ color: STAMP }} />
-                No sales call. No guessing.
+              <div className="inline-flex items-center gap-2 border-[3px] border-foreground bg-card px-3 py-1 font-mono text-[11px] font-bold tracking-[0.15em] uppercase">
+                <Receipt className="size-3.5 text-primary" />
+                {t("home.badge")}
               </div>
 
-              <h1 className="mt-6 text-[2.6rem] leading-[1.02] font-extrabold tracking-tight uppercase sm:text-6xl lg:text-[4.2rem]">
-                What does your
-                <br />
-                website{" "}
+              <h1 className="mt-6 text-[2.6rem] leading-[1.05] font-extrabold tracking-tight uppercase sm:text-6xl lg:text-[4rem]">
+                {t("home.title.a")}{" "}
                 <span className="relative inline-block">
-                  actually
-                  <span
-                    className="absolute right-0 -bottom-1 left-0 h-3 -z-10 sm:-bottom-2 sm:h-5"
-                    style={{ backgroundColor: STAMP, opacity: 0.9 }}
-                  />
+                  <span className="relative z-10">{t("home.title.b")}</span>
+                  <span className="absolute right-0 -bottom-1 left-0 h-3 bg-primary opacity-90 sm:-bottom-2 sm:h-5" />
                 </span>
-                <br />
-                cost?
               </h1>
 
-              <p
-                className="mt-6 max-w-md font-mono text-sm leading-relaxed sm:text-base"
-                style={{ opacity: 0.75 }}
-              >
-                Answer a few plain questions. Get a real price range, a delivery timeline and a full
-                feature breakdown — printed out like an estimate, not a quote someone made up.
+              <p className="mt-6 max-w-md font-mono text-sm leading-relaxed text-muted-foreground sm:text-base">
+                {t("home.subtitle")}
               </p>
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Link
                   to="/onboarding"
-                  className="group inline-flex items-center justify-center gap-2 border-[3px] px-7 py-3.5 text-sm font-bold tracking-wide uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
-                  style={{
-                    borderColor: INK,
-                    backgroundColor: INK,
-                    color: PAPER,
-                    boxShadow: `6px 6px 0 0 ${STAMP}`,
-                  }}
+                  className="brut-shadow-stamp group inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-foreground px-7 py-3.5 text-sm font-bold tracking-wide text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
                 >
-                  Start estimation
-                  <ArrowRight className="size-4 transition-transform group-hover:translate-x-0.5" />
+                  {t("home.cta.primary")}
+                  <ArrowRight className="rtl-flip size-4" />
                 </Link>
 
                 <a
                   href="#how-it-works"
-                  className="inline-flex items-center justify-center gap-1 border-b-[3px] px-1 pb-1 text-sm font-bold tracking-wide uppercase"
-                  style={{ borderColor: INK }}
+                  className="inline-flex items-center justify-center gap-1 border-b-[3px] border-foreground px-1 pb-1 text-sm font-bold tracking-wide uppercase"
                 >
-                  How it works
-                  <ArrowUpRight className="size-4" />
+                  {t("home.cta.secondary")}
+                  <ArrowUpRight className="rtl-flip size-4" />
                 </a>
               </div>
             </div>
@@ -205,74 +108,44 @@ function Landing() {
               transition={{ duration: 0.6, ease: "easeOut" }}
               className="relative mx-auto w-full max-w-sm"
             >
-              <div
-                className="relative border-[3px] bg-white p-6"
-                style={{ borderColor: INK, boxShadow: `10px 10px 0 0 ${INK}` }}
-              >
-                <div
-                  className="absolute -top-4 -right-4 flex size-20 rotate-12 items-center justify-center rounded-full border-[3px] text-center font-mono text-[10px] leading-tight font-black tracking-widest uppercase"
-                  style={{ borderColor: STAMP, color: STAMP, backgroundColor: "#fff" }}
-                >
-                  Estimate
-                  <br />
-                  ready
+              <div className="brut-shadow relative border-[3px] border-foreground bg-card p-6">
+                <div className="absolute -top-4 -right-4 flex size-20 rotate-12 items-center justify-center rounded-full border-[3px] border-primary bg-card text-center font-mono text-[10px] leading-tight font-black tracking-widest text-primary uppercase">
+                  {t("home.stat.price")}
                 </div>
 
-                <div
-                  className="flex items-center justify-between font-mono text-[11px] tracking-widest uppercase"
-                  style={{ opacity: 0.55 }}
-                >
-                  <span>Estimate No. 00452</span>
+                <div className="flex items-center justify-between font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
+                  <span>№ 00452</span>
                   <span>WebCostDz</span>
                 </div>
 
-                <div
-                  className="mt-4 border-t-[3px] border-dashed pt-4"
-                  style={{ borderColor: INK }}
-                >
+                <div className="mt-4 border-t-[3px] border-dashed border-foreground pt-4">
                   <div className="flex items-center justify-between font-mono text-xs">
-                    <span style={{ opacity: 0.6 }}>Business</span>
+                    <span className="text-muted-foreground">Business</span>
                     <span className="font-bold">Bakery / Café</span>
                   </div>
                   <div className="mt-2 flex items-center justify-between font-mono text-xs">
-                    <span style={{ opacity: 0.6 }}>Pages</span>
+                    <span className="text-muted-foreground">Pages</span>
                     <span className="font-bold">6</span>
-                  </div>
-                  <div className="mt-2 flex items-center justify-between font-mono text-xs">
-                    <span style={{ opacity: 0.6 }}>Features</span>
-                    <span className="font-bold text-right">Online orders, gallery</span>
                   </div>
                 </div>
 
-                <div className="mt-5 border-t-[3px] pt-5" style={{ borderColor: INK }}>
-                  <p
-                    className="font-mono text-[11px] tracking-widest uppercase"
-                    style={{ opacity: 0.55 }}
-                  >
-                    Estimated total
+                <div className="mt-5 border-t-[3px] border-foreground pt-5">
+                  <p className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
+                    {t("home.stat.price")}
                   </p>
                   <p className="mt-1 text-4xl font-extrabold tracking-tight">$1,400–$1,700</p>
                   <div className="mt-4 grid grid-cols-2 gap-3">
-                    <div className="border-[3px] p-3" style={{ borderColor: INK }}>
-                      <p
-                        className="font-mono text-[10px] tracking-widest uppercase"
-                        style={{ opacity: 0.55 }}
-                      >
-                        Timeline
+                    <div className="border-[3px] border-foreground p-3">
+                      <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">
+                        {t("home.stat.time")}
                       </p>
-                      <p className="mt-1 font-bold">22 days</p>
+                      <p className="mt-1 font-bold">{t("home.stat.time.value")}</p>
                     </div>
-                    <div
-                      className="border-[3px] p-3"
-                      style={{ borderColor: INK, backgroundColor: STAMP, color: "#fff" }}
-                    >
-                      <p
-                        className="font-mono text-[10px] tracking-widest uppercase"
-                        style={{ opacity: 0.85 }}
-                      >
-                        Complexity
+                    <div className="border-[3px] border-foreground bg-primary p-3 text-primary-foreground">
+                      <p className="font-mono text-[10px] tracking-widest uppercase opacity-85">
+                        {t("home.stat.complexity")}
                       </p>
-                      <p className="mt-1 font-bold">Medium</p>
+                      <p className="mt-1 font-bold">{t("home.stat.complexity.value")}</p>
                     </div>
                   </div>
                 </div>
@@ -283,20 +156,14 @@ function Landing() {
 
         {/* FEATURES */}
         <section className="mx-auto w-full max-w-6xl px-5 py-20">
-          <p
-            className="font-mono text-xs font-bold tracking-[0.2em] uppercase"
-            style={{ color: STAMP }}
-          >
-            What you get
+          <p className="font-mono text-xs font-bold tracking-[0.2em] text-primary uppercase">
+            {t("home.features.subtitle")}
           </p>
           <h2 className="mt-2 max-w-xl text-3xl font-extrabold tracking-tight uppercase sm:text-4xl">
-            Everything you need to plan the budget
+            {t("home.features.title")}
           </h2>
 
-          <div
-            className="mt-10 grid border-[3px] sm:grid-cols-2 lg:grid-cols-3"
-            style={{ borderColor: INK }}
-          >
+          <div className="mt-10 grid border-[3px] border-foreground sm:grid-cols-2 lg:grid-cols-3">
             {features.map((f, i) => (
               <motion.div
                 key={f.title}
@@ -304,12 +171,11 @@ function Landing() {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true, margin: "-60px" }}
                 transition={{ duration: 0.35, delay: i * 0.04 }}
-                className="border-b-[3px] p-6 sm:border-r-[3px] [&:nth-child(2)]:sm:border-r-0 lg:[&:nth-child(2)]:border-r-[3px] lg:[&:nth-child(3n)]:border-r-0"
-                style={{ borderColor: INK }}
+                className="border-b-[3px] border-foreground p-6 sm:border-r-[3px] [&:nth-child(2)]:sm:border-r-0 lg:[&:nth-child(2)]:border-r-[3px] lg:[&:nth-child(3n)]:border-r-0"
               >
-                <f.icon className="size-6" style={{ color: STAMP }} />
+                <f.icon className="size-6 text-primary" />
                 <h3 className="mt-4 text-base font-bold tracking-tight uppercase">{f.title}</h3>
-                <p className="mt-2 font-mono text-[13px] leading-relaxed" style={{ opacity: 0.7 }}>
+                <p className="mt-2 font-mono text-[13px] leading-relaxed text-muted-foreground">
                   {f.text}
                 </p>
               </motion.div>
@@ -320,36 +186,24 @@ function Landing() {
         {/* HOW IT WORKS */}
         <section
           id="how-it-works"
-          className="border-y-[3px]"
-          style={{ borderColor: INK, backgroundColor: INK, color: PAPER }}
+          className="border-y-[3px] border-foreground bg-foreground text-background"
         >
           <div className="mx-auto w-full max-w-6xl px-5 py-20">
-            <p
-              className="font-mono text-xs font-bold tracking-[0.2em] uppercase"
-              style={{ color: STAMP }}
-            >
-              The process
+            <p className="font-mono text-xs font-bold tracking-[0.2em] text-primary uppercase">
+              01 — 02 — 03
             </p>
             <h2 className="mt-2 text-3xl font-extrabold tracking-tight uppercase sm:text-4xl">
-              How it works
+              {t("home.how.title")}
             </h2>
 
             <div className="mt-12 grid gap-10 sm:grid-cols-3">
               {steps.map((s) => (
-                <div key={s.n} className="border-t-[3px] pt-5" style={{ borderColor: STAMP }}>
-                  <span
-                    className="font-mono text-sm font-bold tracking-widest"
-                    style={{ color: STAMP }}
-                  >
+                <div key={s.n} className="border-t-[3px] border-primary pt-5">
+                  <span className="font-mono text-sm font-bold tracking-widest text-primary">
                     {s.n}
                   </span>
                   <h3 className="mt-3 text-lg font-bold tracking-tight uppercase">{s.title}</h3>
-                  <p
-                    className="mt-2 font-mono text-[13px] leading-relaxed"
-                    style={{ opacity: 0.65 }}
-                  >
-                    {s.text}
-                  </p>
+                  <p className="mt-2 font-mono text-[13px] leading-relaxed opacity-70">{s.text}</p>
                 </div>
               ))}
             </div>
@@ -358,64 +212,40 @@ function Landing() {
 
         {/* FAQ */}
         <section className="mx-auto w-full max-w-3xl px-5 py-20">
-          <p
-            className="font-mono text-xs font-bold tracking-[0.2em] uppercase"
-            style={{ color: STAMP }}
-          >
-            Questions
-          </p>
+          <p className="font-mono text-xs font-bold tracking-[0.2em] text-primary uppercase">FAQ</p>
           <h2 className="mt-2 text-3xl font-extrabold tracking-tight uppercase sm:text-4xl">
-            Frequently asked
+            {t("home.faq.title")}
           </h2>
 
-          <div className="mt-8 border-[3px]" style={{ borderColor: INK }}>
+          <div className="mt-8 border-[3px] border-foreground bg-card">
             {faqs.map((f, i) => (
               <details
                 key={f.q}
-                className="group"
-                style={{ borderTop: i === 0 ? "none" : `3px solid ${INK}` }}
+                className={`group ${i === 0 ? "" : "border-t-[3px] border-foreground"}`}
               >
                 <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-5 py-4 text-sm font-bold tracking-tight uppercase">
                   {f.q}
-                  <Plus
-                    className="size-4 shrink-0 transition-transform duration-200 group-open:rotate-45"
-                    style={{ color: STAMP }}
-                  />
+                  <Plus className="size-4 shrink-0 text-primary transition-transform duration-200 group-open:rotate-45" />
                 </summary>
-                <p
-                  className="px-5 pb-5 font-mono text-[13px] leading-relaxed"
-                  style={{ opacity: 0.7 }}
-                >
+                <p className="px-5 pb-5 font-mono text-[13px] leading-relaxed text-muted-foreground">
                   {f.a}
                 </p>
               </details>
             ))}
           </div>
 
-          <div
-            className="mt-16 flex flex-col items-center border-[3px] p-10 text-center"
-            style={{ borderColor: INK, boxShadow: `10px 10px 0 0 ${STAMP}` }}
-          >
-            <p
-              className="font-mono text-xs font-bold tracking-[0.2em] uppercase"
-              style={{ opacity: 0.55 }}
-            >
-              Two minutes. No signup required.
+          <div className="brut-shadow-stamp mt-16 flex flex-col items-center border-[3px] border-foreground bg-card p-10 text-center">
+            <p className="font-mono text-xs font-bold tracking-[0.2em] text-muted-foreground uppercase">
+              {t("home.badge")}
             </p>
             <h3 className="mt-3 max-w-sm text-2xl font-extrabold tracking-tight uppercase">
-              Get your estimate now
+              {t("home.cta.final")}
             </h3>
             <Link
               to="/onboarding"
-              className="mt-6 inline-flex items-center justify-center gap-2 border-[3px] px-8 py-4 text-sm font-bold tracking-wide uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
-              style={{
-                borderColor: INK,
-                backgroundColor: INK,
-                color: PAPER,
-                boxShadow: `6px 6px 0 0 ${STAMP}`,
-              }}
+              className="brut-shadow-stamp mt-6 inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-foreground px-8 py-4 text-sm font-bold tracking-wide text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
             >
-              Start my estimation <ArrowRight className="size-4" />
+              {t("home.cta.primary")} <ArrowRight className="rtl-flip size-4" />
             </Link>
           </div>
         </section>
