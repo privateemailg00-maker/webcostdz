@@ -6,7 +6,16 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { toast } from "sonner";
-import { CalendarDays, CheckCircle2, Gauge, Layers, Plus, Share2, Sparkles, Wallet } from "lucide-react";
+import {
+  CalendarDays,
+  CheckCircle2,
+  Gauge,
+  Layers,
+  Plus,
+  Share2,
+  Sparkles,
+  Wallet,
+} from "lucide-react";
 import { submitLead } from "@/lib/estimate.functions";
 import { useEstimateStore } from "@/store/estimate";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
@@ -17,9 +26,17 @@ export const Route = createFileRoute("/results")({
   head: () => ({
     meta: [
       { title: "Your website estimate — WebCostDz" },
-      { name: "description", content: "Your estimated website price, timeline, complexity and project roadmap." },
+      {
+        name: "description",
+        content: "Your estimated website price, timeline, complexity and project roadmap.",
+      },
       { property: "og:title", content: "Your website estimate — WebCostDz" },
-      { property: "og:description", content: "Your estimated website price, timeline, complexity and project roadmap." },
+      {
+        property: "og:description",
+        content: "Your estimated website price, timeline, complexity and project roadmap.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Results,
@@ -55,9 +72,9 @@ function Results() {
 
   if (!hydrated || !result) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen bg-background text-foreground">
         <SiteHeader />
-        <div className="mx-auto max-w-md px-5 py-32 text-center text-sm text-muted-foreground">
+        <div className="mx-auto max-w-md px-5 py-32 text-center font-mono text-xs font-bold tracking-widest uppercase">
           {t("res.loading")}
         </div>
       </div>
@@ -96,21 +113,25 @@ function Results() {
   };
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="relative mx-auto w-full max-w-5xl px-5 pt-12 pb-24">
-        <div className="glow-bg pointer-events-none absolute inset-x-0 top-0 h-80" />
-
-        <div className="relative text-center">
-          <p className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+        <div className="text-center">
+          <p className="font-mono text-xs font-bold tracking-[0.2em] text-primary uppercase">
             {t("res.for", { business: businessName })}
           </p>
-          <h1 className="mt-3 text-3xl font-bold tracking-tight sm:text-4xl">{t("res.title")}</h1>
+          <h1 className="mt-3 text-3xl font-extrabold tracking-tight uppercase sm:text-4xl">
+            {t("res.title")}
+          </h1>
         </div>
 
-        <div className="relative mt-10 grid gap-4 sm:grid-cols-3">
+        <div className="mt-10 grid border-[3px] border-foreground sm:grid-cols-3">
           {[
-            { icon: Wallet, label: t("res.price"), value: `$${pricing.minimumPrice.toLocaleString()} – $${pricing.maximumPrice.toLocaleString()}` },
+            {
+              icon: Wallet,
+              label: t("res.price"),
+              value: `$${pricing.minimumPrice.toLocaleString()} – $${pricing.maximumPrice.toLocaleString()}`,
+            },
             { icon: CalendarDays, label: t("res.time"), value: durationLabel },
             {
               icon: Gauge,
@@ -123,19 +144,23 @@ function Results() {
               initial={{ opacity: 0, y: 18 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.4, delay: i * 0.08 }}
-              className="glass rounded-3xl p-6"
+              className="border-b-[3px] border-foreground bg-card p-6 last:border-b-0 sm:border-e-[3px] sm:border-b-0 sm:last:border-e-0"
             >
-              <span className="brand-gradient inline-flex size-10 items-center justify-center rounded-2xl text-primary-foreground">
+              <span className="inline-flex size-10 items-center justify-center border-[3px] border-foreground bg-primary text-primary-foreground">
                 <card.icon className="size-5" />
               </span>
-              <p className="mt-4 text-xs tracking-wide text-muted-foreground uppercase">{card.label}</p>
-              <p className="mt-1 text-xl font-bold">{card.value}</p>
+              <p className="mt-4 font-mono text-[10px] font-bold tracking-[0.2em] text-muted-foreground uppercase">
+                {card.label}
+              </p>
+              <p className="mt-1 text-xl font-extrabold tracking-tight">{card.value}</p>
             </motion.div>
           ))}
         </div>
 
         <Section title={t("res.summary")} icon={Sparkles}>
-          <p className="text-sm leading-relaxed text-muted-foreground">{analysis.project_summary}</p>
+          <p className="font-mono text-[13px] leading-relaxed text-muted-foreground">
+            {analysis.project_summary}
+          </p>
         </Section>
 
         <Section title={t("res.features")} icon={Layers}>
@@ -143,11 +168,11 @@ function Results() {
             {pricing.features.map((f) => (
               <span
                 key={f.key}
-                className="inline-flex items-center gap-2 rounded-full border border-border bg-card/60 px-4 py-2 text-sm"
+                className="inline-flex items-center gap-2 border-[3px] border-foreground bg-background px-4 py-2 text-sm font-bold"
               >
-                <CheckCircle2 className="size-3.5 text-accent" />
+                <CheckCircle2 className="size-3.5 text-primary" />
                 {localizeFeature(lang, f.key, f.label)}
-                <span className="text-xs text-muted-foreground">${f.price}</span>
+                <span className="font-mono text-xs text-muted-foreground">${f.price}</span>
               </span>
             ))}
           </div>
@@ -155,15 +180,17 @@ function Results() {
 
         {analysis.development_phases?.length > 0 && (
           <Section title={t("res.phases")} icon={CalendarDays}>
-            <ol className="relative space-y-6 border-s border-border ps-6">
+            <ol className="relative space-y-6 border-s-[3px] border-foreground ps-6">
               {analysis.development_phases.map((phase) => (
                 <li key={phase.name} className="relative">
-                  <span className="brand-gradient absolute -start-[31px] mt-1.5 size-3 rounded-full" />
+                  <span className="absolute -start-[33px] mt-1.5 size-3.5 border-[3px] border-foreground bg-primary" />
                   <div className="flex flex-wrap items-baseline gap-2">
-                    <h3 className="text-sm font-semibold">{phase.name}</h3>
-                    <span className="text-xs text-muted-foreground">{phase.duration}</span>
+                    <h3 className="text-sm font-bold uppercase">{phase.name}</h3>
+                    <span className="font-mono text-xs text-primary">{phase.duration}</span>
                   </div>
-                  <p className="mt-1 text-sm text-muted-foreground">{phase.description}</p>
+                  <p className="mt-1 font-mono text-[13px] text-muted-foreground">
+                    {phase.description}
+                  </p>
                 </li>
               ))}
             </ol>
@@ -174,7 +201,10 @@ function Results() {
           <Section title={t("res.stack")} icon={Layers}>
             <div className="flex flex-wrap gap-2">
               {analysis.recommended_stack.map((tech) => (
-                <span key={tech} className="rounded-full bg-muted px-4 py-2 text-sm">
+                <span
+                  key={tech}
+                  className="border-[3px] border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold tracking-widest text-background uppercase"
+                >
                   {tech}
                 </span>
               ))}
@@ -187,51 +217,75 @@ function Results() {
             {addons.map((addon) => (
               <div
                 key={addon.key}
-                className="flex items-center justify-between rounded-2xl border border-border bg-card/50 px-5 py-4 text-sm"
+                className="flex items-center justify-between border-[3px] border-foreground bg-background px-5 py-4 text-sm font-bold"
               >
                 <span>{localizeFeature(lang, addon.key, addon.label)}</span>
-                <span className="font-semibold text-primary">+${addon.price.toLocaleString()}</span>
+                <span className="text-primary">+${addon.price.toLocaleString()}</span>
               </div>
             ))}
           </div>
           {analysis.possible_future_features?.length > 0 && (
-            <p className="mt-4 text-xs text-muted-foreground">
+            <p className="mt-4 font-mono text-[11px] text-muted-foreground">
               {t("res.future")} {analysis.possible_future_features.join(" · ")}
             </p>
           )}
         </Section>
 
         <div className="relative mt-12">
-          <div className="glass rounded-[2rem] p-7 sm:p-9">
+          <div className="brut-shadow-stamp border-[3px] border-foreground bg-card p-7 sm:p-9">
             {leadSent ? (
               <div className="py-8 text-center">
-                <CheckCircle2 className="mx-auto size-10 text-accent" />
-                <h2 className="mt-4 text-xl font-bold">{t("res.sent.title")}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <CheckCircle2 className="mx-auto size-10 text-primary" />
+                <h2 className="mt-4 text-xl font-extrabold uppercase">{t("res.sent.title")}</h2>
+                <p className="mt-2 font-mono text-[13px] text-muted-foreground">
                   {t("res.sent.text")}
                 </p>
               </div>
             ) : (
               <>
-                <h2 className="text-xl font-bold tracking-tight">{t("res.form.title")}</h2>
-                <p className="mt-2 text-sm text-muted-foreground">
+                <h2 className="text-xl font-extrabold tracking-tight uppercase">
+                  {t("res.form.title")}
+                </h2>
+                <p className="mt-2 font-mono text-[13px] text-muted-foreground">
                   {t("res.form.subtitle")}
                 </p>
-                <form onSubmit={form.handleSubmit(onSubmit)} className="mt-6 grid gap-4 sm:grid-cols-2">
+                <form
+                  onSubmit={form.handleSubmit(onSubmit)}
+                  className="mt-6 grid gap-4 sm:grid-cols-2"
+                >
                   <Field label={t("res.form.name")} error={form.formState.errors.fullName?.message}>
-                    <input {...form.register("fullName")} className={inputClass} placeholder="Amine Belkacem" />
+                    <input
+                      {...form.register("fullName")}
+                      className={inputClass}
+                      placeholder="Amine Belkacem"
+                    />
                   </Field>
                   <Field label={t("res.form.company")} error={form.formState.errors.company?.message}>
-                    <input {...form.register("company")} className={inputClass} placeholder={t("res.form.optional")} />
+                    <input
+                      {...form.register("company")}
+                      className={inputClass}
+                      placeholder={t("res.form.optional")}
+                    />
                   </Field>
                   <Field label={t("res.form.phone")} error={form.formState.errors.phone?.message}>
-                    <input {...form.register("phone")} className={inputClass} placeholder="+213 ..." />
+                    <input
+                      {...form.register("phone")}
+                      className={inputClass}
+                      placeholder="+213 ..."
+                    />
                   </Field>
                   <Field label={t("res.form.email")} error={form.formState.errors.email?.message}>
-                    <input {...form.register("email")} className={inputClass} placeholder="you@company.dz" />
+                    <input
+                      {...form.register("email")}
+                      className={inputClass}
+                      placeholder="you@company.dz"
+                    />
                   </Field>
                   <div className="sm:col-span-2">
-                    <Field label={t("res.form.details")} error={form.formState.errors.projectDetails?.message}>
+                    <Field
+                      label={t("res.form.details")}
+                      error={form.formState.errors.projectDetails?.message}
+                    >
                       <textarea
                         {...form.register("projectDetails")}
                         rows={4}
@@ -244,7 +298,7 @@ function Results() {
                     <button
                       type="submit"
                       disabled={form.formState.isSubmitting}
-                      className="brand-gradient shadow-glow w-full rounded-full px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:opacity-60"
+                      className="w-full border-[3px] border-foreground bg-foreground px-6 py-3.5 text-sm font-bold tracking-wide text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px] hover:shadow-[6px_6px_0_0_var(--color-primary)] disabled:opacity-60"
                     >
                       {form.formState.isSubmitting ? t("res.form.sending") : t("res.form.submit")}
                     </button>
@@ -255,7 +309,11 @@ function Results() {
           </div>
 
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
-            <button type="button" onClick={share} className="glass inline-flex items-center justify-center gap-2 rounded-full px-6 py-3 text-sm font-medium">
+            <button
+              type="button"
+              onClick={share}
+              className="inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-card px-6 py-3 text-sm font-bold uppercase"
+            >
               <Share2 className="size-4" /> {t("res.share")}
             </button>
             <button
@@ -264,7 +322,7 @@ function Results() {
                 reset();
                 navigate({ to: "/business" });
               }}
-              className="glass rounded-full px-6 py-3 text-sm font-medium"
+              className="border-[3px] border-foreground bg-card px-6 py-3 text-sm font-bold uppercase"
             >
               {t("res.new")}
             </button>
@@ -277,14 +335,24 @@ function Results() {
 }
 
 const inputClass =
-  "w-full rounded-2xl border border-border bg-card/60 px-4 py-3 text-sm outline-none transition-colors placeholder:text-muted-foreground focus:border-primary";
+  "w-full border-[3px] border-foreground bg-background px-4 py-3 font-mono text-sm outline-none placeholder:text-muted-foreground focus:shadow-[4px_4px_0_0_var(--color-primary)]";
 
-function Field({ label, error, children }: { label: string; error?: string; children: React.ReactNode }) {
+function Field({
+  label,
+  error,
+  children,
+}: {
+  label: string;
+  error?: string;
+  children: React.ReactNode;
+}) {
   return (
     <label className="block text-start">
-      <span className="mb-2 block text-xs font-medium text-muted-foreground">{label}</span>
+      <span className="mb-2 block font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
+        {label}
+      </span>
       {children}
-      {error && <span className="mt-1 block text-xs text-destructive">{error}</span>}
+      {error && <span className="mt-1 block font-mono text-xs text-destructive">{error}</span>}
     </label>
   );
 }
@@ -304,11 +372,11 @@ function Section({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true, margin: "-60px" }}
       transition={{ duration: 0.4 }}
-      className="glass relative mt-6 rounded-[2rem] p-7"
+      className="relative mt-6 border-[3px] border-foreground bg-card p-7"
     >
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-3 border-b-[3px] border-foreground pb-3">
         <Icon className="size-4 text-primary" />
-        <h2 className="text-lg font-semibold tracking-tight">{title}</h2>
+        <h2 className="text-lg font-extrabold tracking-tight uppercase">{title}</h2>
       </div>
       <div className="mt-5">{children}</div>
     </motion.section>
