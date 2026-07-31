@@ -13,6 +13,7 @@ import {
   Plus,
 } from "lucide-react";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -109,6 +110,20 @@ const faqs = [
 ];
 
 function Landing() {
+  const { t } = useI18n();
+
+  const features = featureIcons.map((icon, i) => ({
+    icon,
+    title: t(`home.f${i + 1}.title`),
+    text: t(`home.f${i + 1}.text`),
+  }));
+  const steps = [1, 2, 3].map((n) => ({
+    n: `0${n}`,
+    title: t(`home.s${n}.title`),
+    text: t(`home.s${n}.text`),
+  }));
+  const faqs = [1, 2, 3, 4].map((n) => ({ q: t(`home.q${n}`), a: t(`home.a${n}`) }));
+
   return (
     <div className="min-h-screen" style={{ backgroundColor: PAPER, color: INK }}>
       <SiteHeader />

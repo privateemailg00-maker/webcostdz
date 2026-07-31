@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { createEstimate, getQuestions } from "@/lib/estimate.functions";
 import { useEstimateStore } from "@/store/estimate";
 import { SiteHeader } from "@/components/site-chrome";
+import { useI18n } from "@/lib/i18n";
 
 export const Route = createFileRoute("/questions")({
   head: () => ({
@@ -23,8 +24,10 @@ export const Route = createFileRoute("/questions")({
 
 function QuestionWizard() {
   const navigate = useNavigate();
-  const { slug, businessName, questions, answers, step, setQuestions, setAnswer, setStep, setResult } =
+  const { slug, businessName, questions, questionsLang, answers, step, setQuestions, clearQuestions, setAnswer, setStep, setResult } =
     useEstimateStore();
+  const { t, lang, dir } = useI18n();
+  const sign = dir === "rtl" ? -1 : 1;
   const fetchQuestions = useServerFn(getQuestions);
   const buildEstimate = useServerFn(createEstimate);
   const [submitting, setSubmitting] = useState(false);
@@ -36,19 +39,23 @@ function QuestionWizard() {
     if (hydrated && !slug) navigate({ to: "/business" });
   }, [hydrated, slug, navigate]);
 
+  useEffect(() => {
+    if (hydrated && questions.length > 0 && questionsLang && questionsLang !== lang) clearQuestions();
+  }, [hydrated, lang, questionsLang, questions.length, clearQuestions]);
+
   const query = useQuery({
-    queryKey: ["questions", slug],
+    queryKey: ["questions", slug, lang],
     enabled: hydrated && !!slug && questions.length === 0,
     retry: false,
-    queryFn: () => fetchQuestions({ data: { slug: slug!, businessName: businessName! } }),
+    queryFn: () => fetchQuestions({ data: { slug: slug!, businessName: businessName!, lang } }),
   });
 
   useEffect(() => {
-    if (query.data?.questions?.length) setQuestions(query.data.questions);
-  }, [query.data, setQuestions]);
+    if (query.data?.questions?.length) setQuestions(query.data.questions, lang);
+  }, [query.data, setQuestions, lang]);
 
   if (!hydrated || (!questions.length && query.isPending)) {
-    return <LoadingState label="Generating questions for your business…" />;
+    return <LoadingState label={t("q.loading")} />;
   }
 
   if (!questions.length) {
@@ -56,16 +63,16 @@ function QuestionWizard() {
       <div className="min-h-screen">
         <SiteHeader />
         <div className="mx-auto max-w-md px-5 py-32 text-center">
-          <h1 className="text-xl font-semibold">We couldn't build your questionnaire</h1>
+          <h1 className="text-xl font-semibold">{t("q.fail.title")}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
-            {query.error instanceof Error ? query.error.message : "Please try again in a moment."}
+            {query.error instanceof Error ? query.error.message : t("q.fail.text")}
           </p>
           <button
             type="button"
             onClick={() => query.refetch()}
             className="brand-gradient mt-6 rounded-full px-6 py-3 text-sm font-semibold text-primary-foreground"
           >
-            Try again
+            {t("q.retry")}
           </button>
         </div>
       </div>
@@ -91,20 +98,20 @@ function QuestionWizard() {
     try {
       const payload = questions.map((q) => ({
         question: q.question,
-        answer: (answers[q.id] ?? ["Not specified"]).join(", "),
+        answer: (answers[q.id] ?? [t("q.notSpecified")]).join(", "),
         category: q.category,
       }));
-      const result = await buildEstimate({ data: { slug: slug!, businessName: businessName!, answers: payload } });
+      const result = await buildEstimate({ data: { slug: slug!, businessName: businessName!, lang, answers: payload } });
       setResult(result);
       navigate({ to: "/results" });
     } catch (error) {
-      toast.error(error instanceof Error ? error.message : "Something went wrong. Please try again.");
+      toast.error(error instanceof Error ? error.message : t("q.error"));
     } finally {
       setSubmitting(false);
     }
   };
 
-  if (submitting) return <LoadingState label="Calculating your estimate…" />;
+  if (submitting) return <LoadingState label={t("q.calculating")} />;
 
   return (
     <div className="min-h-screen">
@@ -113,9 +120,7 @@ function QuestionWizard() {
         <div className="glow-bg pointer-events-none absolute inset-x-0 top-0 h-72" />
         <div className="relative">
           <div className="flex items-center justify-between text-xs font-medium text-muted-foreground">
-            <span>
-              Question {step + 1} of {questions.length}
-            </span>
+            <span>{t("q.counter", { current: step + 1, total: questions.length })}</span>
             <span>{businessName}</span>
           </div>
           <div className="mt-3 h-2 w-full overflow-hidden rounded-full bg-muted">
@@ -129,16 +134,16 @@ function QuestionWizard() {
           <AnimatePresence mode="wait">
             <motion.div
               key={current.id}
-              initial={{ opacity: 0, x: 30 }}
+              initial={{ opacity: 0, x: 30 * sign }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -30 }}
+              exit={{ opacity: 0, x: -30 * sign }}
               transition={{ duration: 0.28 }}
               className="glass mt-8 rounded-[2rem] p-7"
             >
               <p className="text-[11px] font-semibold tracking-widest text-primary uppercase">{current.category}</p>
               <h1 className="mt-3 text-xl font-bold tracking-tight sm:text-2xl">{current.question}</h1>
               {current.type === "checkbox" && (
-                <p className="mt-2 text-xs text-muted-foreground">Select all that apply.</p>
+                <p className="mt-2 text-xs text-muted-foreground">{t("q.multi")}</p>
               )}
 
               <div className="mt-6 space-y-3">
@@ -149,7 +154,7 @@ function QuestionWizard() {
                       key={option}
                       type="button"
                       onClick={() => choose(option)}
-                      className={`flex w-full items-center justify-between gap-3 rounded-2xl border px-5 py-4 text-left text-sm transition-all ${
+                      className={`flex w-full items-center justify-between gap-3 rounded-2xl border px-5 py-4 text-start text-sm transition-all ${
                         active
                           ? "border-primary bg-primary/10 font-semibold text-foreground"
                           : "border-border bg-card/50 text-muted-foreground hover:border-primary/40 hover:text-foreground"
@@ -177,7 +182,7 @@ function QuestionWizard() {
               onClick={() => setStep(step - 1)}
               className="glass inline-flex items-center gap-2 rounded-full px-5 py-3 text-sm font-medium disabled:opacity-40"
             >
-              <ArrowLeft className="size-4" /> Previous
+              <ArrowLeft className="rtl-flip size-4" /> {t("q.prev")}
             </button>
             <button
               type="button"
@@ -185,7 +190,7 @@ function QuestionWizard() {
               onClick={() => (isLast ? submit() : setStep(step + 1))}
               className="brand-gradient shadow-glow inline-flex items-center gap-2 rounded-full px-6 py-3 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5 disabled:translate-y-0 disabled:opacity-40"
             >
-              {isLast ? "See my estimate" : "Next"} <ArrowRight className="size-4" />
+              {isLast ? t("q.finish") : t("q.next")} <ArrowRight className="rtl-flip size-4" />
             </button>
           </div>
         </div>
