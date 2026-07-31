@@ -10,9 +10,17 @@ export const Route = createFileRoute("/onboarding")({
   head: () => ({
     meta: [
       { title: "Get started — WebCostDz" },
-      { name: "description", content: "A quick three-step introduction before estimating your website cost." },
+      {
+        name: "description",
+        content: "A quick three-step introduction before estimating your website cost.",
+      },
       { property: "og:title", content: "Get started — WebCostDz" },
-      { property: "og:description", content: "A quick three-step introduction before estimating your website cost." },
+      {
+        property: "og:description",
+        content: "A quick three-step introduction before estimating your website cost.",
+      },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary" },
     ],
   }),
   component: Onboarding,
@@ -45,14 +53,14 @@ function Onboarding() {
   };
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden">
-      <div className="glow-bg pointer-events-none absolute inset-x-0 top-0 h-[520px]" />
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-background text-foreground">
+      <div className="brut-grid pointer-events-none absolute inset-0" />
 
-      <div className="relative flex items-center justify-between px-5 py-5">
+      <div className="relative flex items-center justify-between border-b-[3px] border-foreground px-5 py-4">
         <button
           type="button"
           onClick={() => navigate({ to: "/" })}
-          className="text-sm text-muted-foreground transition-colors hover:text-foreground"
+          className="border-b-[3px] border-foreground pb-0.5 font-mono text-xs font-bold tracking-widest uppercase"
         >
           {t("onb.back")}
         </button>
@@ -62,7 +70,7 @@ function Onboarding() {
         </div>
       </div>
 
-      <main className="relative flex flex-1 items-center justify-center px-5 pb-16">
+      <main className="relative flex flex-1 items-center justify-center px-5 py-14">
         <div className="w-full max-w-md">
           <AnimatePresence mode="wait">
             <motion.div
@@ -71,13 +79,17 @@ function Onboarding() {
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -40 * sign }}
               transition={{ duration: 0.35, ease: "easeOut" }}
-              className="glass rounded-[2rem] p-8 text-center"
+              className="brut-shadow border-[3px] border-foreground bg-card p-8 text-center"
             >
-              <span className="brand-gradient shadow-glow mx-auto inline-flex size-16 items-center justify-center rounded-3xl text-primary-foreground">
+              <span className="mx-auto inline-flex size-16 items-center justify-center border-[3px] border-foreground bg-primary text-primary-foreground">
                 <screen.icon className="size-7" />
               </span>
-              <h1 className="mt-7 text-2xl font-bold tracking-tight">{screen.title}</h1>
-              <p className="mt-3 text-sm text-muted-foreground">{screen.text}</p>
+              <h1 className="mt-7 text-2xl font-extrabold tracking-tight uppercase">
+                {screen.title}
+              </h1>
+              <p className="mt-3 font-mono text-[13px] leading-relaxed text-muted-foreground">
+                {screen.text}
+              </p>
             </motion.div>
           </AnimatePresence>
 
@@ -85,8 +97,8 @@ function Onboarding() {
             {screens.map((s, i) => (
               <span
                 key={s.title}
-                className={`h-1.5 rounded-full transition-all ${
-                  i === index ? "brand-gradient w-8" : "w-2 bg-border"
+                className={`h-2 border-[3px] border-foreground transition-all ${
+                  i === index ? "w-10 bg-primary" : "w-4 bg-transparent"
                 }`}
               />
             ))}
@@ -95,7 +107,7 @@ function Onboarding() {
           <button
             type="button"
             onClick={next}
-            className="brand-gradient shadow-glow mt-8 inline-flex w-full items-center justify-center gap-2 rounded-full px-6 py-3.5 text-sm font-semibold text-primary-foreground transition-transform hover:-translate-y-0.5"
+            className="brut-shadow-stamp mt-8 inline-flex w-full items-center justify-center gap-2 border-[3px] border-foreground bg-foreground px-6 py-3.5 text-sm font-bold tracking-wide text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
           >
             {screen.cta} <ArrowRight className="rtl-flip size-4" />
           </button>
@@ -107,7 +119,7 @@ function Onboarding() {
                 setOnboarded();
                 navigate({ to: "/business" });
               }}
-              className="mt-4 w-full text-center text-xs text-muted-foreground transition-colors hover:text-foreground"
+              className="mt-5 w-full text-center font-mono text-[11px] font-bold tracking-widest text-muted-foreground uppercase"
             >
               {t("onb.skip")}
             </button>
