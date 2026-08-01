@@ -20,6 +20,7 @@ import { submitLead } from "@/lib/estimate.functions";
 import { useEstimateStore } from "@/store/estimate";
 import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { useI18n } from "@/lib/i18n";
+import { formatPrice } from "@/lib/pricing";
 import { localizeFeature } from "@/lib/i18n/content";
 
 export const Route = createFileRoute("/results")({
@@ -97,8 +98,8 @@ function Results() {
   const share = async () => {
     const text = t("res.shareText", {
       business: businessName,
-      min: `$${pricing.minimumPrice.toLocaleString()}`,
-      max: `$${pricing.maximumPrice.toLocaleString()}`,
+      min: formatPrice(pricing.minimumPrice),
+      max: formatPrice(pricing.maximumPrice),
       duration: durationLabel,
     });
     try {
@@ -130,9 +131,13 @@ function Results() {
             {
               icon: Wallet,
               label: t("res.price"),
-              value: `$${pricing.minimumPrice.toLocaleString()} – $${pricing.maximumPrice.toLocaleString()}`,
+              value: `${formatPrice(pricing.minimumPrice)} – ${formatPrice(pricing.maximumPrice)}`,
             },
-            { icon: CalendarDays, label: t("res.time"), value: durationLabel },
+            {
+              icon: CalendarDays,
+              label: t("res.time"),
+              value: `${durationLabel}${pricing.speedSurcharge ? ` · ${t(`speed.${pricing.speed}`)}` : ""}`,
+            },
             {
               icon: Gauge,
               label: t("res.complexity"),
@@ -172,7 +177,7 @@ function Results() {
               >
                 <CheckCircle2 className="size-3.5 text-primary" />
                 {localizeFeature(lang, f.key, f.label)}
-                <span className="font-mono text-xs text-muted-foreground">${f.price}</span>
+                <span className="font-mono text-xs text-muted-foreground">{formatPrice(f.price)}</span>
               </span>
             ))}
           </div>
@@ -220,7 +225,7 @@ function Results() {
                 className="flex items-center justify-between border-[3px] border-foreground bg-background px-5 py-4 text-sm font-bold"
               >
                 <span>{localizeFeature(lang, addon.key, addon.label)}</span>
-                <span className="text-primary">+${addon.price.toLocaleString()}</span>
+                <span className="text-primary">+{formatPrice(addon.price)}</span>
               </div>
             ))}
           </div>

@@ -92,6 +92,42 @@ export type Database = {
         }
         Relationships: []
       }
+      feature_prices: {
+        Row: {
+          created_at: string
+          days: number
+          key: string
+          kind: string
+          label: string
+          price: number
+          sort: number
+          updated_at: string
+          weight: number
+        }
+        Insert: {
+          created_at?: string
+          days?: number
+          key: string
+          kind?: string
+          label: string
+          price?: number
+          sort?: number
+          updated_at?: string
+          weight?: number
+        }
+        Update: {
+          created_at?: string
+          days?: number
+          key?: string
+          kind?: string
+          label?: string
+          price?: number
+          sort?: number
+          updated_at?: string
+          weight?: number
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
