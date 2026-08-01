@@ -133,7 +133,7 @@ function Landing() {
                   <p className="font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
                     {t("home.stat.price")}
                   </p>
-                  <p className="mt-1 text-4xl font-extrabold tracking-tight">$1,400–$1,700</p>
+                  <p className="mt-1 text-4xl font-extrabold tracking-tight">1,400–1,700 DZD</p>
                   <div className="mt-4 grid grid-cols-2 gap-3">
                     <div className="border-[3px] border-foreground p-3">
                       <p className="font-mono text-[10px] tracking-widest text-muted-foreground uppercase">

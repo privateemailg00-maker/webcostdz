@@ -138,6 +138,8 @@ export function localizeBusiness(
 }
 
 const featuresAr: Record<string, string> = {
+  managed_backend: "منصة خلفية جاهزة",
+  custom_backend: "نظام خلفي مبرمج خصيصاً",
   landing_page: "صفحة هبوط",
   authentication: "تسجيل الدخول",
   admin_dashboard: "لوحة تحكم الإدارة",
@@ -169,6 +171,8 @@ const featuresAr: Record<string, string> = {
 };
 
 const featuresFr: Record<string, string> = {
+  managed_backend: "Plateforme back-end prête à l'emploi",
+  custom_backend: "Back-end développé sur mesure",
   landing_page: "Page d'accueil",
   authentication: "Authentification",
   admin_dashboard: "Tableau de bord admin",
