@@ -184,11 +184,17 @@ function QuestionWizard() {
             <h1 className="mt-3 text-xl font-extrabold tracking-tight uppercase sm:text-2xl">
               {current.question}
             </h1>
+            {current.help && (
+              <div className="mt-4 border-[3px] border-dashed border-foreground bg-background p-4 font-mono text-[12px] leading-relaxed text-muted-foreground">
+                {current.help}
+              </div>
+            )}
             {current.type === "checkbox" && (
               <p className="mt-2 font-mono text-[11px] tracking-widest text-muted-foreground uppercase">
                 {t("q.multi")}
               </p>
             )}
+
 
             <div className="mt-6 space-y-3">
               {current.options.map((option) => {
