@@ -115,6 +115,14 @@ function QuestionWizard() {
     }
   };
 
+  const constAnswer = (key: "backend" | "speed") => {
+    const q = questions.find((item) => item.constKey === key);
+    if (!q) return undefined;
+    const picked = (answers[q.id] ?? [])[0];
+    const idx = q.options.indexOf(picked ?? "");
+    return idx >= 0 ? q.optionKeys?.[idx] : undefined;
+  };
+
   const submit = async () => {
     setSubmitting(true);
     try {
@@ -124,8 +132,16 @@ function QuestionWizard() {
         category: q.category,
       }));
       const result = await buildEstimate({
-        data: { slug: slug!, businessName: businessName!, lang, answers: payload },
+        data: {
+          slug: slug!,
+          businessName: businessName!,
+          lang,
+          answers: payload,
+          backend: (constAnswer("backend") ?? "managed") as "managed" | "custom",
+          speed: (constAnswer("speed") ?? "standard") as "standard" | "fast" | "urgent",
+        },
       });
+
       setResult(result);
       navigate({ to: "/results" });
     } catch (error) {
