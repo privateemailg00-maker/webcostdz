@@ -15,6 +15,25 @@ export function dirOf(lang: Lang): "rtl" | "ltr" {
 type Dict = Record<string, string>;
 
 const en: Dict = {
+  "speed.standard": "Standard",
+  "speed.fast": "Fast",
+  "speed.urgent": "Urgent",
+  "admin.title": "Price admin",
+  "admin.login": "Admin access",
+  "admin.password": "Admin password",
+  "admin.enter": "Enter",
+  "admin.invalid": "Wrong password",
+  "admin.unconfigured": "Admin password is not configured yet",
+  "admin.save": "Save changes",
+  "admin.saved": "Prices saved",
+  "admin.logout": "Log out",
+  "admin.feature": "Feature",
+  "admin.price": "Price (DZD)",
+  "admin.days": "Days",
+  "admin.weight": "Weight",
+  "admin.kind.feature": "Features",
+  "admin.kind.backend": "Backend options",
+  "admin.kind.addon": "Add-ons",
   "lang.label": "Language",
 
   "nav.start": "Start estimation",
@@ -142,6 +161,25 @@ const en: Dict = {
 };
 
 const fr: Dict = {
+  "speed.standard": "Standard",
+  "speed.fast": "Rapide",
+  "speed.urgent": "Urgent",
+  "admin.title": "Gestion des prix",
+  "admin.login": "Accès admin",
+  "admin.password": "Mot de passe admin",
+  "admin.enter": "Entrer",
+  "admin.invalid": "Mot de passe incorrect",
+  "admin.unconfigured": "Le mot de passe admin n'est pas encore configuré",
+  "admin.save": "Enregistrer",
+  "admin.saved": "Prix enregistrés",
+  "admin.logout": "Déconnexion",
+  "admin.feature": "Fonctionnalité",
+  "admin.price": "Prix (DZD)",
+  "admin.days": "Jours",
+  "admin.weight": "Poids",
+  "admin.kind.feature": "Fonctionnalités",
+  "admin.kind.backend": "Options back-end",
+  "admin.kind.addon": "Options supplémentaires",
   "lang.label": "Langue",
 
   "nav.start": "Lancer l'estimation",
@@ -269,6 +307,25 @@ const fr: Dict = {
 };
 
 const ar: Dict = {
+  "speed.standard": "عادي",
+  "speed.fast": "سريع",
+  "speed.urgent": "مستعجل",
+  "admin.title": "إدارة الأسعار",
+  "admin.login": "دخول المسؤول",
+  "admin.password": "كلمة سر المسؤول",
+  "admin.enter": "دخول",
+  "admin.invalid": "كلمة السر غير صحيحة",
+  "admin.unconfigured": "لم يتم ضبط كلمة سر المسؤول بعد",
+  "admin.save": "حفظ التعديلات",
+  "admin.saved": "تم حفظ الأسعار",
+  "admin.logout": "خروج",
+  "admin.feature": "الميزة",
+  "admin.price": "السعر (دج)",
+  "admin.days": "الأيام",
+  "admin.weight": "الوزن",
+  "admin.kind.feature": "الميزات",
+  "admin.kind.backend": "خيارات النظام الخلفي",
+  "admin.kind.addon": "الإضافات",
   "lang.label": "اللغة",
 
   "nav.start": "ابدأ التقدير",
