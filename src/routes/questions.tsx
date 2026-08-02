@@ -248,22 +248,121 @@ function QuestionWizard() {
   );
 }
 
+
 function LoadingState({ label }: { label: string }) {
   return (
-    <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
-      <div className="mx-auto flex max-w-md flex-col items-center px-5 py-32 text-center">
-        <Loader2 className="size-8 animate-spin text-primary" />
-        <p className="mt-5 font-mono text-xs font-bold tracking-widest uppercase">{label}</p>
-        <div className="mt-8 w-full space-y-3">
-          {[0, 1, 2].map((i) => (
+    <>
+      {/* ── Custom keyframes ─────────────────────────────────────────────────
+          Defined inline so they don't require changes to tailwind.config.ts.
+          Prefix "__ldr_" avoids any name collision with app-level animations.
+      ──────────────────────────────────────────────────────────────────────── */}
+      <style>{`
+        @keyframes __ldr_cw {
+          to { transform: rotate(360deg); }
+        }
+        @keyframes __ldr_ccw {
+          to { transform: rotate(-360deg); }
+        }
+        @keyframes __ldr_blink {
+          0%, 49% { opacity: 1; }
+          50%, 100% { opacity: 0; }
+        }
+
+        /*
+         * The "3D press" illusion:
+         *   raised  → translate(-4px,-4px)  +  shadow offset = 5px 5px  (object looks lifted)
+         *   pressed → translate(+1px,+1px)  +  shadow offset = 0        (object slams flat)
+         * Both the translation and shadow animate together — the eye reads this as
+         * a physical object being pushed into the surface.
+         */
+        @keyframes __ldr_press {
+          0%, 100% {
+            transform: translate(-4px, -4px);
+            box-shadow: 5px 5px 0 0 var(--color-primary);
+          }
+          45%, 55% {
+            transform: translate(1px, 1px);
+            box-shadow: 0px 0px 0 0 var(--color-primary);
+          }
+        }
+
+        /*
+         * Staircase variant — each skeleton row uses a different phase offset
+         * so they appear to "march" in sequence.
+         */
+        @keyframes __ldr_march {
+          0%,  20% { transform: translate(-4px, -4px); box-shadow: 5px 5px 0 0 var(--color-primary); }
+          40%,  60% { transform: translate(1px,  1px);  box-shadow: 0px 0px 0 0 var(--color-primary); }
+          80%, 100% { transform: translate(-4px, -4px); box-shadow: 5px 5px 0 0 var(--color-primary); }
+        }
+      `}</style>
+
+      <div className="min-h-screen bg-background text-foreground">
+        <SiteHeader />
+
+        <div className="mx-auto flex max-w-xs flex-col items-center px-5 py-28 text-center">
+
+          {/* ── Spinner: two nested counter-rotating squares ──────────────────
+               The outer square has a hard amber shadow, the inner is inverted.
+               Because borders are thick (3 px) and corners are sharp, this reads
+               as brutalist rather than generic — it is a square, not a circle.
+          ──────────────────────────────────────────────────────────────────── */}
+          <div className="relative mb-10 size-[72px]">
+            {/* Outer — clockwise, shadow gives the 3-D depth */}
             <div
-              key={i}
-              className="h-14 w-full animate-pulse border-[3px] border-foreground bg-muted"
+              className="absolute inset-0 border-[3px] border-foreground bg-background"
+              style={{
+                animation:  "__ldr_cw 2.4s linear infinite",
+                boxShadow:  "6px 6px 0 0 var(--color-primary)",
+              }}
             />
-          ))}
+            {/* Inner — counter-clockwise, inverted colours */}
+            <div
+              className="absolute inset-[18%] border-[3px] border-primary bg-foreground"
+              style={{ animation: "__ldr_ccw 1.7s linear infinite" }}
+            />
+          </div>
+
+          {/* ── Label chip ────────────────────────────────────────────────────
+               Inverted block (fg background / bg text) with a hard primary shadow.
+               The blinking underscore cursor adds a terminal / brutalist feel.
+          ──────────────────────────────────────────────────────────────────── */}
+          <div
+            className="border-[3px] border-foreground bg-foreground px-6 py-3"
+            style={{ boxShadow: "5px 5px 0 0 var(--color-primary)" }}
+          >
+            <p className="font-mono text-[11px] font-bold tracking-[0.22em] uppercase text-background">
+              {label}
+              <span
+                className="ml-0.5 inline-block w-[1ch]"
+                style={{ animation: "__ldr_blink 1s step-end infinite" }}
+              >
+                _
+              </span>
+            </p>
+          </div>
+
+          {/* ── Skeleton rows with staggered 3-D press animation ─────────────
+               Each row lifts and "slams" into its surface at a different phase,
+               creating a marching-dominoes rhythm.  The hard offset shadow is
+               what sells the depth: it grows and shrinks synchronously with the
+               translate, giving the impression of a real shadow cast from above.
+          ──────────────────────────────────────────────────────────────────── */}
+          <div className="mt-10 w-full space-y-4">
+            {[0, 1, 2].map((i) => (
+              <div
+                key={i}
+                className="h-14 w-full border-[3px] border-foreground bg-muted"
+                style={{
+                  animation:      "__ldr_march 1.6s ease-in-out infinite",
+                  animationDelay: `${i * 0.22}s`,
+                }}
+              />
+            ))}
+          </div>
+
         </div>
       </div>
-    </div>
+    </>
   );
 }
