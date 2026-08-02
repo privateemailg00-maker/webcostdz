@@ -47,17 +47,57 @@ function AdminPage() {
   const logout = useServerFn(adminLogout);
   const list = useServerFn(adminListPrices);
   const save = useServerFn(adminUpdatePrices);
+  const createRow = useServerFn(adminCreatePrice);
+  const deleteRow = useServerFn(adminDeletePrice);
 
   const [checking, setChecking] = useState(true);
   const [authed, setAuthed] = useState(false);
   const [password, setPassword] = useState("");
   const [rows, setRows] = useState<AdminPriceRow[]>([]);
   const [busy, setBusy] = useState(false);
+  const [draft, setDraft] = useState({
+    label: "",
+    kind: "feature" as "feature" | "backend" | "addon",
+    price: 0,
+    days: 1,
+    weight: 1,
+  });
 
   const loadRows = async () => {
     const res = await list({});
     setRows(res.rows);
   };
+
+  const doCreate = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!draft.label.trim()) return;
+    setBusy(true);
+    try {
+      await createRow({ data: draft });
+      setDraft({ label: "", kind: "feature", price: 0, days: 1, weight: 1 });
+      await loadRows();
+      toast.success(t("admin.created"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
+  const doDelete = async (key: string) => {
+    if (!window.confirm(t("admin.confirmDelete"))) return;
+    setBusy(true);
+    try {
+      await deleteRow({ data: { key } });
+      setRows((prev) => prev.filter((r) => r.key !== key));
+      toast.success(t("admin.deleted"));
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error");
+    } finally {
+      setBusy(false);
+    }
+  };
+
 
   useEffect(() => {
     (async () => {
