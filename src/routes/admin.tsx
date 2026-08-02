@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Lock, Save } from "lucide-react";
+import { Loader2, Lock, Plus, Save, Trash2 } from "lucide-react";
 import {
   adminListPrices,
   adminLogin,
@@ -13,7 +13,11 @@ import {
 import { SiteHeader } from "@/components/site-chrome";
 import { useI18n } from "@/lib/i18n";
 import { localizeFeature } from "@/lib/i18n/content";
-import { adminUpdatePrices } from "@/lib/admin.functions";
+import {
+  adminCreatePrice,
+  adminDeletePrice,
+  adminUpdatePrices,
+} from "@/lib/admin.functions";
 
 export const Route = createFileRoute("/admin")({
   head: () => ({
