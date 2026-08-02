@@ -253,7 +253,7 @@ function AdminPage() {
                 {groupRows.map((row) => (
                   <div
                     key={row.key}
-                    className="grid items-end gap-3 p-4 sm:grid-cols-[1.6fr_1fr_0.6fr_0.6fr]"
+                    className="grid items-end gap-3 p-4 sm:grid-cols-[1.6fr_1fr_0.6fr_0.6fr_auto]"
                   >
                     <label className="block">
                       <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
