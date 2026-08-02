@@ -241,6 +241,93 @@ function AdminPage() {
           </div>
         </div>
 
+        <form
+          onSubmit={doCreate}
+          className="brut-shadow mt-8 border-[3px] border-foreground bg-card p-5"
+        >
+          <h2 className="font-mono text-xs font-bold tracking-[0.2em] uppercase">
+            {t("admin.addTitle")}
+          </h2>
+          <div className="mt-4 grid gap-3 sm:grid-cols-[1.6fr_1fr_1fr_0.6fr_0.6fr]">
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                {t("admin.name")}
+              </span>
+              <input
+                value={draft.label}
+                onChange={(e) => setDraft((d) => ({ ...d, label: e.target.value }))}
+                className={input}
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                {t("admin.type")}
+              </span>
+              <select
+                value={draft.kind}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, kind: e.target.value as typeof d.kind }))
+                }
+                className={input}
+              >
+                <option value="feature">{t("admin.kind.feature")}</option>
+                <option value="backend">{t("admin.kind.backend")}</option>
+                <option value="addon">{t("admin.kind.addon")}</option>
+              </select>
+            </label>
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                {t("admin.price")}
+              </span>
+              <input
+                type="number"
+                min={0}
+                value={draft.price}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, price: Math.max(0, Number(e.target.value) || 0) }))
+                }
+                className={input}
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                {t("admin.days")}
+              </span>
+              <input
+                type="number"
+                min={0}
+                value={draft.days}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, days: Math.max(0, Number(e.target.value) || 0) }))
+                }
+                className={input}
+              />
+            </label>
+            <label className="block">
+              <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                {t("admin.weight")}
+              </span>
+              <input
+                type="number"
+                min={0}
+                max={10}
+                value={draft.weight}
+                onChange={(e) =>
+                  setDraft((d) => ({ ...d, weight: Math.max(0, Number(e.target.value) || 0) }))
+                }
+                className={input}
+              />
+            </label>
+          </div>
+          <button
+            type="submit"
+            disabled={busy || !draft.label.trim()}
+            className="brut-shadow-stamp mt-4 inline-flex items-center gap-2 border-[3px] border-foreground bg-primary px-5 py-2 text-xs font-bold text-primary-foreground uppercase disabled:opacity-50"
+          >
+            <Plus className="size-4" /> {t("admin.add")}
+          </button>
+        </form>
+
         {groups.map((group) => {
           const groupRows = rows.filter((r) => r.kind === group.kind);
           if (!groupRows.length) return null;
