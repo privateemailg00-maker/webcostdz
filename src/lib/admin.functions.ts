@@ -80,3 +80,57 @@ export const adminUpdatePrices = createServerFn({ method: "POST" })
     }
     return { ok: true, saved: data.rows.length };
   });
+
+const createInput = z.object({
+  label: z.string().trim().min(1).max(120),
+  kind: z.enum(["feature", "backend", "addon"]),
+  price: z.number().int().min(0).max(10_000_000),
+  days: z.number().int().min(0).max(365),
+  weight: z.number().int().min(0).max(10),
+});
+
+export const adminCreatePrice = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => createInput.parse(d))
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+
+    const base =
+      data.label
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "_")
+        .replace(/^_+|_+$/g, "")
+        .slice(0, 40) || "feature";
+    const key = `${base}_${Date.now().toString(36).slice(-4)}`;
+
+    const { error } = await supabaseAdmin.from("feature_prices").insert({
+      key,
+      label: data.label,
+      kind: data.kind,
+      price: data.price,
+      days: data.days,
+      weight: data.weight,
+      sort: 500,
+    });
+    if (error) {
+      console.error("Failed to create price", error);
+      throw new Error("Could not add the feature. Please try again.");
+    }
+    return { ok: true, key };
+  });
+
+export const adminDeletePrice = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => z.object({ key: z.string().min(1).max(60) }).parse(d))
+  .handler(async ({ data }) => {
+    const { requireAdmin } = await import("./admin.server");
+    await requireAdmin();
+    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+    const { error } = await supabaseAdmin.from("feature_prices").delete().eq("key", data.key);
+    if (error) {
+      console.error("Failed to delete price", error);
+      throw new Error("Could not delete the feature. Please try again.");
+    }
+    return { ok: true };
+  });
+
