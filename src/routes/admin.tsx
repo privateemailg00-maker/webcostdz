@@ -302,6 +302,16 @@ function AdminPage() {
                         className={input}
                       />
                     </label>
+                    <button
+                      type="button"
+                      onClick={() => doDelete(row.key)}
+                      disabled={busy}
+                      aria-label={t("admin.delete")}
+                      title={t("admin.delete")}
+                      className="inline-flex size-10 items-center justify-center border-[3px] border-foreground bg-card text-destructive disabled:opacity-50"
+                    >
+                      <Trash2 className="size-4" />
+                    </button>
                   </div>
                 ))}
               </div>
