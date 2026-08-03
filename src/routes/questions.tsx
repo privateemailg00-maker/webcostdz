@@ -48,7 +48,7 @@ function QuestionWizard() {
     step,
     addQuestions,
     setQuestionsDone,
-    clearQuestions,
+    replaceQuestions,
     setAnswer,
     setStep,
     setResult,
