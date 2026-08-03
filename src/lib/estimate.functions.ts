@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { calculatePrice, BACKEND_KEYS, SPEED_KEYS } from "./pricing";
 import { langSchema, LANG_NAMES } from "./lang";
-import { constantQuestions } from "./constant-questions";
+
 
 export type Question = {
   id: number;
