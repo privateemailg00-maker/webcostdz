@@ -197,13 +197,15 @@ function QuestionWizard() {
   };
 
   if (submitting) return <LoadingState label={t("q.calculating")} />;
+  if (loadingNext && step === questions.length - 1)
+    return <LoadingState label={t("q.loading")} />;
 
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
       <main className="relative mx-auto w-full max-w-2xl px-5 pt-12 pb-24">
         <div className="flex items-center justify-between font-mono text-[11px] font-bold tracking-widest uppercase">
-          <span>{t("q.counter", { current: step + 1, total: questions.length })}</span>
+          <span>{t("q.counter", { current: step + 1, total: estimatedTotal })}</span>
           <span className="text-primary">{businessName}</span>
         </div>
         <div className="mt-3 h-4 w-full border-[3px] border-foreground bg-card">
@@ -281,8 +283,16 @@ function QuestionWizard() {
           </button>
           <button
             type="button"
-            disabled={selected.length === 0}
-            onClick={() => (isLast ? submit() : setStep(step + 1))}
+            disabled={selected.length === 0 || loadingNext}
+            onClick={async () => {
+              if (isLast) return submit();
+              if (needsNext) {
+                const ok = await loadNext();
+                if (ok) setStep(step + 1);
+                return;
+              }
+              setStep(step + 1);
+            }}
             className="brut-shadow-stamp inline-flex items-center gap-2 border-[3px] border-foreground bg-foreground px-6 py-3 text-sm font-bold text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px] disabled:translate-x-0 disabled:translate-y-0 disabled:opacity-40"
           >
             {isLast ? t("q.finish") : t("q.next")} <ArrowRight className="rtl-flip size-4" />
