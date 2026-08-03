@@ -8,6 +8,7 @@ import {
   ADAPTIVE_MAX,
   createEstimate,
   getNextQuestion,
+  translateQuestions,
   type Question,
 } from "@/lib/estimate.functions";
 import { constantQuestions } from "@/lib/constant-questions";
