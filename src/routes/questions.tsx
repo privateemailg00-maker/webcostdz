@@ -1,11 +1,16 @@
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { useQuery } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "motion/react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { ArrowLeft, ArrowRight, Check, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { createEstimate, getQuestions } from "@/lib/estimate.functions";
+import {
+  ADAPTIVE_MAX,
+  createEstimate,
+  getNextQuestion,
+  type Question,
+} from "@/lib/estimate.functions";
+import { constantQuestions } from "@/lib/constant-questions";
 import { useEstimateStore } from "@/store/estimate";
 import { SiteHeader } from "@/components/site-chrome";
 import { useI18n } from "@/lib/i18n";
@@ -37,9 +42,11 @@ function QuestionWizard() {
     businessName,
     questions,
     questionsLang,
+    questionsDone,
     answers,
     step,
-    setQuestions,
+    addQuestions,
+    setQuestionsDone,
     clearQuestions,
     setAnswer,
     setStep,
@@ -47,10 +54,13 @@ function QuestionWizard() {
   } = useEstimateStore();
   const { t, lang, dir } = useI18n();
   const sign = dir === "rtl" ? -1 : 1;
-  const fetchQuestions = useServerFn(getQuestions);
+  const nextQuestion = useServerFn(getNextQuestion);
   const buildEstimate = useServerFn(createEstimate);
   const [submitting, setSubmitting] = useState(false);
+  const [loadingNext, setLoadingNext] = useState(false);
+  const [failed, setFailed] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
+  const busy = useRef(false);
 
   useEffect(() => setHydrated(true), []);
 
@@ -63,18 +73,50 @@ function QuestionWizard() {
       clearQuestions();
   }, [hydrated, lang, questionsLang, questions.length, clearQuestions]);
 
-  const query = useQuery({
-    queryKey: ["questions", slug, lang],
-    enabled: hydrated && !!slug && questions.length === 0,
-    retry: false,
-    queryFn: () => fetchQuestions({ data: { slug: slug!, businessName: businessName!, lang } }),
-  });
+  const loadNext = useCallback(async () => {
+    if (busy.current) return false;
+    busy.current = true;
+    setLoadingNext(true);
+    setFailed(null);
+    try {
+      const asked = useEstimateStore
+        .getState()
+        .questions.filter((q) => !q.constKey)
+        .map((q) => ({
+          question: q.question,
+          answer: (useEstimateStore.getState().answers[q.id] ?? []).join(", "),
+        }))
+        .filter((a) => a.answer);
+
+      const res = await nextQuestion({
+        data: { slug: slug!, businessName: businessName!, lang, asked },
+      });
+
+      if (res.question) {
+        addQuestions([res.question], lang);
+      } else {
+        const consts = constantQuestions(lang).map((c, i) => ({
+          ...c,
+          id: 900 + i,
+        })) as unknown as Question[];
+        addQuestions(consts, lang);
+        setQuestionsDone(true);
+      }
+      return true;
+    } catch (error) {
+      setFailed(error instanceof Error ? error.message : t("q.fail.text"));
+      return false;
+    } finally {
+      busy.current = false;
+      setLoadingNext(false);
+    }
+  }, [addQuestions, businessName, lang, nextQuestion, setQuestionsDone, slug, t]);
 
   useEffect(() => {
-    if (query.data?.questions?.length) setQuestions(query.data.questions, lang);
-  }, [query.data, setQuestions, lang]);
+    if (hydrated && slug && questions.length === 0 && !failed && !busy.current) void loadNext();
+  }, [hydrated, slug, questions.length, failed, loadNext]);
 
-  if (!hydrated || (!questions.length && query.isPending)) {
+  if (!hydrated || (!questions.length && !failed)) {
     return <LoadingState label={t("q.loading")} />;
   }
 
@@ -85,11 +127,11 @@ function QuestionWizard() {
         <div className="mx-auto max-w-md px-5 py-32 text-center">
           <h1 className="text-xl font-extrabold uppercase">{t("q.fail.title")}</h1>
           <p className="mt-2 font-mono text-[13px] text-muted-foreground">
-            {query.error instanceof Error ? query.error.message : t("q.fail.text")}
+            {failed ?? t("q.fail.text")}
           </p>
           <button
             type="button"
-            onClick={() => query.refetch()}
+            onClick={() => void loadNext()}
             className="brut-shadow-stamp mt-6 border-[3px] border-foreground bg-foreground px-6 py-3 text-sm font-bold tracking-wide text-background uppercase"
           >
             {t("q.retry")}
@@ -101,8 +143,11 @@ function QuestionWizard() {
 
   const current = questions[Math.min(step, questions.length - 1)];
   const selected = answers[current.id] ?? [];
-  const progress = ((step + (selected.length ? 1 : 0)) / questions.length) * 100;
-  const isLast = step === questions.length - 1;
+  const estimatedTotal = questionsDone ? questions.length : Math.max(questions.length + 2, ADAPTIVE_MAX);
+  const progress = ((step + (selected.length ? 1 : 0)) / estimatedTotal) * 100;
+  const isLast = questionsDone && step === questions.length - 1;
+  const needsNext = step === questions.length - 1 && !questionsDone;
+
 
   const choose = (option: string) => {
     if (current.type === "checkbox") {
