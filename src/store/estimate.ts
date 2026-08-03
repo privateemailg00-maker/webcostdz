@@ -20,6 +20,7 @@ type State = {
   businessName: string | null;
   questions: Question[];
   questionsLang: string | null;
+  questionsDone: boolean;
   answers: Record<number, string[]>;
   step: number;
   result: EstimateResult | null;
@@ -28,6 +29,8 @@ type State = {
   setOnboarded: () => void;
   selectBusiness: (slug: string, name: string) => void;
   setQuestions: (q: Question[], lang: string) => void;
+  addQuestions: (q: Question[], lang: string) => void;
+  setQuestionsDone: (v: boolean) => void;
   clearQuestions: () => void;
   setAnswer: (id: number, value: string[]) => void;
   setStep: (n: number) => void;
@@ -44,6 +47,7 @@ export const useEstimateStore = create<State>()(
       businessName: null,
       questions: [],
       questionsLang: null,
+      questionsDone: false,
       answers: {},
       step: 0,
       result: null,
@@ -51,9 +55,18 @@ export const useEstimateStore = create<State>()(
       recent: [],
       setOnboarded: () => set({ onboarded: true }),
       selectBusiness: (slug, businessName) =>
-        set({ slug, businessName, questions: [], questionsLang: null, answers: {}, step: 0, result: null, leadSent: false }),
+        set({ slug, businessName, questions: [], questionsLang: null, questionsDone: false, answers: {}, step: 0, result: null, leadSent: false }),
       setQuestions: (questions, questionsLang) => set({ questions, questionsLang }),
-      clearQuestions: () => set({ questions: [], questionsLang: null, answers: {}, step: 0 }),
+      addQuestions: (questions, questionsLang) =>
+        set({
+          questionsLang,
+          questions: [
+            ...get().questions,
+            ...questions.filter((q) => !get().questions.some((e) => e.id === q.id)),
+          ],
+        }),
+      setQuestionsDone: (questionsDone) => set({ questionsDone }),
+      clearQuestions: () => set({ questions: [], questionsLang: null, questionsDone: false, answers: {}, step: 0 }),
       setAnswer: (id, value) => set({ answers: { ...get().answers, [id]: value } }),
       setStep: (step) => set({ step }),
       setResult: (result) =>
@@ -73,7 +86,7 @@ export const useEstimateStore = create<State>()(
         }),
       setLeadSent: (leadSent) => set({ leadSent }),
       reset: () =>
-        set({ slug: null, businessName: null, questions: [], questionsLang: null, answers: {}, step: 0, result: null, leadSent: false }),
+        set({ slug: null, businessName: null, questions: [], questionsLang: null, questionsDone: false, answers: {}, step: 0, result: null, leadSent: false }),
     }),
     { name: "webcostdz-estimate" },
   ),

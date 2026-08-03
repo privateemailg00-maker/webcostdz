@@ -2,7 +2,7 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { calculatePrice, BACKEND_KEYS, SPEED_KEYS } from "./pricing";
 import { langSchema, LANG_NAMES } from "./lang";
-import { constantQuestions } from "./constant-questions";
+
 
 export type Question = {
   id: number;
@@ -25,65 +25,64 @@ export type Analysis = {
   possible_future_features: string[];
 };
 
-const questionsInput = z.object({
+export const ADAPTIVE_MAX = 8;
+const ADAPTIVE_MIN = 5;
+
+const nextInput = z.object({
   slug: z.string().min(1).max(60),
   businessName: z.string().min(1).max(80),
   lang: langSchema,
+  asked: z
+    .array(z.object({ question: z.string().max(400), answer: z.string().max(600) }))
+    .max(20),
 });
 
-export const getQuestions = createServerFn({ method: "POST" })
-  .inputValidator((d: unknown) => questionsInput.parse(d))
-  .handler(async ({ data }): Promise<{ questions: Question[] }> => {
-    const { supabaseAdmin } = await import("@/integrations/supabase/client.server");
+/** Returns the next question, chosen by AI based on everything answered so far. */
+export const getNextQuestion = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => nextInput.parse(d))
+  .handler(async ({ data }): Promise<{ question: Question | null; done: boolean }> => {
     const { callAiJson } = await import("./ai.server");
 
-    const constants = constantQuestions(data.lang) as unknown as Question[];
-    const offset = constants.length;
+    if (data.asked.length >= ADAPTIVE_MAX) return { question: null, done: true };
 
-    const cached = await supabaseAdmin
-      .from("ai_questions")
-      .select("questions_json")
-      .eq("business_slug", `${data.slug}:${data.lang}`)
-      .maybeSingle();
+    const history = data.asked.length
+      ? data.asked.map((a) => `Q: ${a.question}\nA: ${a.answer}`).join("\n")
+      : "(no questions answered yet)";
 
-    if (cached.data?.questions_json) {
-      const aiQuestions = (cached.data.questions_json as unknown as Question[]).map((q, i) => ({
-        ...q,
-        id: offset + i + 1,
-      }));
-      return { questions: [...constants, ...aiQuestions] };
-    }
-
-    const result = await callAiJson<{ questions: Question[] }>(
-      `You are an experienced software business analyst. Return JSON only in the shape {"questions": [...]}.
-Generate between 8 and 15 questions that help estimate the complexity of building a website for the selected business.
-Rules: use multiple-choice questions whenever possible; keep them simple for non-technical users; only include questions that affect pricing.
-Do NOT ask about the backend technology, hosting platform, delivery speed, deadline or budget — those are already handled separately.
-Each question must contain: id (number), question (string), type ("radio" or "checkbox"), options (string array), weight (1-5), category (string).
-IMPORTANT: write every question text, every option and every category in ${LANG_NAMES[data.lang]}. Keep the JSON keys in English.`,
-      `Business type: ${data.businessName}`,
+    const result = await callAiJson<{
+      enough?: boolean;
+      question?: Omit<Question, "id"> | null;
+    }>(
+      `You are an experienced software business analyst interviewing a non-technical client, ONE question at a time.
+Return JSON only: {"enough": boolean, "question": {"question": string, "type": "radio"|"checkbox", "options": string[], "weight": number (1-5), "category": string} | null}.
+Rules:
+- Ask exactly ONE new question that follows logically from the previous answers and helps scope and price the website.
+- Never repeat or rephrase a question already asked. Build on the answers given.
+- Keep it simple, multiple choice, and only ask things that affect pricing or scope.
+- Do NOT ask about backend technology, hosting platform, delivery speed, deadline or budget — those are asked separately at the end.
+- Set "enough" to true (and "question" to null) only when you already have enough information to scope the project.
+- At least ${ADAPTIVE_MIN} questions must be asked before "enough" can be true; a maximum of ${ADAPTIVE_MAX} questions total.
+IMPORTANT: write the question text, options and category in ${LANG_NAMES[data.lang]}. Keep the JSON keys in English.`,
+      `Business type: ${data.businessName}\nAnswers so far:\n${history}`,
     );
 
-    const aiQuestions = (result.questions ?? []).slice(0, 15).map((q, i) => ({
-      ...q,
-      id: i + 1,
-      type: q.type === "checkbox" ? "checkbox" : "radio",
-      options: Array.isArray(q.options) && q.options.length ? q.options : ["Yes", "No"],
-    })) as Question[];
+    const enough = Boolean(result.enough) && data.asked.length >= ADAPTIVE_MIN;
+    if (enough || !result.question?.question) return { question: null, done: true };
 
-    if (!aiQuestions.length) throw new Error("Could not generate questions. Please try again.");
-
-    await supabaseAdmin
-      .from("ai_questions")
-      .upsert(
-        { business_slug: `${data.slug}:${data.lang}`, questions_json: aiQuestions as never },
-        { onConflict: "business_slug" },
-      );
-
+    const q = result.question;
     return {
-      questions: [...constants, ...aiQuestions.map((q, i) => ({ ...q, id: offset + i + 1 }))],
+      question: {
+        id: data.asked.length + 1,
+        question: q.question,
+        type: q.type === "checkbox" ? "checkbox" : "radio",
+        options: Array.isArray(q.options) && q.options.length ? q.options : ["Yes", "No"],
+        weight: typeof q.weight === "number" ? q.weight : 2,
+        category: q.category ?? "",
+      },
+      done: false,
     };
   });
+
 
 const estimateInput = z.object({
   slug: z.string().min(1).max(60),
