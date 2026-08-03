@@ -69,10 +69,73 @@ function QuestionWizard() {
     if (hydrated && !slug) navigate({ to: "/business" });
   }, [hydrated, slug, navigate]);
 
+  const translate = useServerFn(translateQuestions);
+  const translating = useRef(false);
+
+  // Language changed mid-flow: translate in place instead of restarting.
   useEffect(() => {
-    if (hydrated && questions.length > 0 && questionsLang && questionsLang !== lang)
-      clearQuestions();
-  }, [hydrated, lang, questionsLang, questions.length, clearQuestions]);
+    if (!hydrated || !questions.length || !questionsLang || questionsLang === lang) return;
+    if (translating.current) return;
+    translating.current = true;
+
+    const run = async () => {
+      const state = useEstimateStore.getState();
+      const list = state.questions;
+      const prevAnswers = state.answers;
+      const aiItems = list
+        .filter((q) => !q.constKey)
+        .map((q) => ({
+          id: q.id,
+          question: q.question,
+          category: q.category ?? "",
+          options: q.options,
+        }));
+
+      let translated: Record<number, { question: string; category: string; options: string[] }> = {};
+      try {
+        const res = await translate({ data: { lang, items: aiItems } });
+        translated = Object.fromEntries(res.items.map((i) => [i.id, i]));
+      } catch {
+        // keep original text if translation fails
+      }
+
+      const consts = constantQuestions(lang);
+      const nextAnswers: Record<number, string[]> = {};
+
+      const nextQuestions = list.map((q) => {
+        const picked = prevAnswers[q.id] ?? [];
+        if (q.constKey) {
+          const c = consts.find((x) => x.constKey === q.constKey);
+          if (!c) return q;
+          const merged = { ...q, question: c.question, help: c.help, category: c.category, options: c.options, optionKeys: c.optionKeys } as Question;
+          nextAnswers[q.id] = picked
+            .map((p) => q.options.indexOf(p))
+            .filter((i) => i >= 0)
+            .map((i) => c.options[i]);
+          return merged;
+        }
+        const tr = translated[q.id];
+        if (!tr) {
+          nextAnswers[q.id] = picked;
+          return q;
+        }
+        nextAnswers[q.id] = picked
+          .map((p) => q.options.indexOf(p))
+          .filter((i) => i >= 0)
+          .map((i) => tr.options[i] ?? q.options[i]);
+        return { ...q, question: tr.question, category: tr.category || q.category, options: tr.options };
+      });
+
+      replaceQuestions(nextQuestions, lang, nextAnswers);
+      translating.current = false;
+    };
+
+    setLoadingNext(true);
+    void run().finally(() => {
+      translating.current = false;
+      setLoadingNext(false);
+    });
+  }, [hydrated, lang, questionsLang, questions.length, replaceQuestions, translate]);
 
   const loadNext = useCallback(async () => {
     if (busy.current) return false;
