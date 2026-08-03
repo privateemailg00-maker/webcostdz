@@ -84,6 +84,55 @@ IMPORTANT: write the question text, options and category in ${LANG_NAMES[data.la
   });
 
 
+const translateInput = z.object({
+  lang: langSchema,
+  items: z
+    .array(
+      z.object({
+        id: z.number(),
+        question: z.string().max(400),
+        category: z.string().max(120).default(""),
+        options: z.array(z.string().max(300)).max(12),
+      }),
+    )
+    .max(20),
+});
+
+/** Translates already-asked AI questions into another language, keeping ids and option order. */
+export const translateQuestions = createServerFn({ method: "POST" })
+  .inputValidator((d: unknown) => translateInput.parse(d))
+  .handler(async ({ data }): Promise<{ items: { id: number; question: string; category: string; options: string[] }[] }> => {
+    if (!data.items.length) return { items: [] };
+    const { callAiJson } = await import("./ai.server");
+
+    const result = await callAiJson<{
+      items?: { id: number; question: string; category: string; options: string[] }[];
+    }>(
+      `You are a professional translator. Translate the given questionnaire items into ${LANG_NAMES[data.lang]}.
+Return JSON only: {"items":[{"id": number, "question": string, "category": string, "options": string[]}]}.
+Rules: keep the exact same ids, same number of options and the SAME option ORDER. Translate naturally, keep it short. Do not add or remove items.`,
+      JSON.stringify(data.items),
+    );
+
+    const byId = new Map((result.items ?? []).map((i) => [i.id, i]));
+    return {
+      items: data.items.map((src) => {
+        const tr = byId.get(src.id);
+        const options =
+          tr && Array.isArray(tr.options) && tr.options.length === src.options.length
+            ? tr.options
+            : src.options;
+        return {
+          id: src.id,
+          question: tr?.question || src.question,
+          category: tr?.category || src.category,
+          options,
+        };
+      }),
+    };
+  });
+
+
 const estimateInput = z.object({
   slug: z.string().min(1).max(60),
   businessName: z.string().min(1).max(80),

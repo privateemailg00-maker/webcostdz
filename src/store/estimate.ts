@@ -29,6 +29,7 @@ type State = {
   setOnboarded: () => void;
   selectBusiness: (slug: string, name: string) => void;
   setQuestions: (q: Question[], lang: string) => void;
+  replaceQuestions: (q: Question[], lang: string, answers: Record<number, string[]>) => void;
   addQuestions: (q: Question[], lang: string) => void;
   setQuestionsDone: (v: boolean) => void;
   clearQuestions: () => void;
@@ -57,6 +58,8 @@ export const useEstimateStore = create<State>()(
       selectBusiness: (slug, businessName) =>
         set({ slug, businessName, questions: [], questionsLang: null, questionsDone: false, answers: {}, step: 0, result: null, leadSent: false }),
       setQuestions: (questions, questionsLang) => set({ questions, questionsLang }),
+      replaceQuestions: (questions, questionsLang, answers) =>
+        set({ questions, questionsLang, answers }),
       addQuestions: (questions, questionsLang) =>
         set({
           questionsLang,
