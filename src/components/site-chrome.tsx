@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
+import { Link, useNavigate, useRouterState } from "@tanstack/react-router";
 import { Moon, Sun, Gauge, Languages } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { LANGS, useI18n } from "@/lib/i18n";
@@ -103,10 +103,26 @@ export function LanguageSwitcher({ className }: { className?: string }) {
 
 export function SiteHeader() {
   const { t } = useI18n();
+  const navigate = useNavigate();
+  const pathname = useRouterState({ select: (s) => s.location.pathname });
+  const taps = useRef({ count: 0, at: 0 });
+
+  const handleLogoClick = (e: React.MouseEvent) => {
+    if (pathname !== "/") return;
+    const now = Date.now();
+    taps.current.count = now - taps.current.at > 1200 ? 1 : taps.current.count + 1;
+    taps.current.at = now;
+    if (taps.current.count >= 5) {
+      e.preventDefault();
+      taps.current.count = 0;
+      navigate({ to: "/admin" });
+    }
+  };
+
   return (
     <header className="sticky top-0 z-40 w-full border-b-[3px] border-foreground bg-background">
       <div className="mx-auto flex h-16 w-full max-w-6xl items-center justify-between px-5">
-        <Link to="/" className="flex items-center gap-2.5">
+        <Link to="/" onClick={handleLogoClick} className="flex items-center gap-2.5">
           <span className="inline-flex size-9 items-center justify-center border-[3px] border-foreground bg-foreground text-background">
             <Gauge className="size-4" />
           </span>
