@@ -180,9 +180,31 @@ function QuestionWizard() {
     if (hydrated && slug && questions.length === 0 && !failed && !busy.current) void loadNext();
   }, [hydrated, slug, questions.length, failed, loadNext]);
 
-  if (!hydrated || (!questions.length && !failed)) {
-    return <LoadingState label={t("q.loading")} />;
+  if (!hydrated) return <LoadingState label={t("q.loading")} />;
+
+  if (!questions.length && !failed) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <SiteHeader />
+        <main className="relative mx-auto w-full max-w-2xl px-5 pt-12 pb-24">
+          <div className="flex items-center justify-between font-mono text-[11px] font-bold tracking-widest uppercase">
+            <span>{t("q.counter", { current: 1, total: ADAPTIVE_MAX })}</span>
+            <span className="text-primary">{businessName}</span>
+          </div>
+          <div className="mt-3 h-4 w-full border-[3px] border-foreground bg-card">
+            <div className="h-full w-[6%] bg-primary" />
+          </div>
+          <div className="brut-shadow mt-8 flex flex-col items-center gap-4 border-[3px] border-foreground bg-card p-10 text-center">
+            <Loader2 className="size-8 animate-spin text-primary" />
+            <p className="font-mono text-[13px] font-bold tracking-wide uppercase">
+              {t("q.gen.1")}
+            </p>
+          </div>
+        </main>
+      </div>
+    );
   }
+
 
   if (!questions.length) {
     return (
