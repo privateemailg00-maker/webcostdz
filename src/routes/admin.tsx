@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Loader2, Lock, Plus, Save, Trash2 } from "lucide-react";
+import { LayoutGrid, Loader2, Lock, Plus, Save, Star, Trash2 } from "lucide-react";
 import {
   adminListPrices,
   adminLogin,
@@ -37,6 +37,23 @@ export const Route = createFileRoute("/admin")({
   component: AdminPage,
 });
 
+const COMMON_KEYS = [
+  "landing_page",
+  "authentication",
+  "admin_dashboard",
+  "booking_system",
+  "reservation_calendar",
+  "notifications",
+  "file_upload",
+  "customer_accounts",
+  "multilingual",
+  "contact_form",
+  "google_maps",
+  "custom_backend",
+  "responsive_design",
+  "ssl_security",
+];
+
 const input =
   "w-full border-[3px] border-foreground bg-background px-3 py-2 font-mono text-sm outline-none focus:shadow-[4px_4px_0_0_var(--color-primary)]";
 
@@ -55,6 +72,7 @@ function AdminPage() {
   const [password, setPassword] = useState("");
   const [rows, setRows] = useState<AdminPriceRow[]>([]);
   const [busy, setBusy] = useState(false);
+  const [view, setView] = useState<"prices" | "common">("prices");
   const [draft, setDraft] = useState({
     label: "",
     kind: "feature" as "feature" | "backend" | "addon",
@@ -215,7 +233,31 @@ function AdminPage() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <SiteHeader />
-      <main className="mx-auto w-full max-w-4xl px-5 pt-12 pb-24">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 pt-12 pb-24 md:flex-row">
+        <aside className="md:w-56 md:shrink-0">
+          <nav className="brut-shadow border-[3px] border-foreground bg-card">
+            <p className="border-b-[3px] border-foreground px-4 py-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
+              {t("admin.nav.title")}
+            </p>
+            {([
+              { id: "prices", label: t("admin.nav.prices"), Icon: LayoutGrid },
+              { id: "common", label: t("admin.nav.common"), Icon: Star },
+            ] as const).map(({ id, label, Icon }) => (
+              <button
+                key={id}
+                type="button"
+                onClick={() => setView(id)}
+                className={`flex w-full items-center gap-2 border-b-[3px] border-foreground px-4 py-3 text-start text-xs font-bold uppercase last:border-b-0 ${
+                  view === id ? "bg-foreground text-background" : "bg-card"
+                }`}
+              >
+                <Icon className="size-4" /> {label}
+              </button>
+            ))}
+          </nav>
+        </aside>
+
+        <main className="min-w-0 flex-1">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <h1 className="text-2xl font-extrabold tracking-tight uppercase">{t("admin.title")}</h1>
           <div className="flex gap-3">
@@ -241,6 +283,65 @@ function AdminPage() {
           </div>
         </div>
 
+        {view === "common" && (
+          <section className="brut-shadow mt-8 border-[3px] border-foreground bg-card">
+            <div className="border-b-[3px] border-foreground px-5 py-3">
+              <h2 className="font-mono text-xs font-bold tracking-[0.2em] uppercase">
+                {t("admin.common.title")}
+              </h2>
+              <p className="mt-1 font-mono text-[11px] text-muted-foreground">
+                {t("admin.common.hint")}
+              </p>
+            </div>
+            <div className="divide-y-[3px] divide-foreground">
+              {COMMON_KEYS.map((key) => rows.find((r) => r.key === key)).map((row) =>
+                row ? (
+                  <div
+                    key={row.key}
+                    className="grid items-end gap-3 p-4 sm:grid-cols-[1.6fr_1fr_0.8fr]"
+                  >
+                    <label className="block">
+                      <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                        {localizeFeature(lang, row.key, row.label)}
+                      </span>
+                      <input
+                        value={row.label}
+                        onChange={(e) => patch(row.key, "label", e.target.value)}
+                        className={input}
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                        {t("admin.price")}
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={row.price}
+                        onChange={(e) => patch(row.key, "price", e.target.value)}
+                        className={input}
+                      />
+                    </label>
+                    <label className="block">
+                      <span className="mb-1 block font-mono text-[10px] tracking-widest uppercase">
+                        {t("admin.days")}
+                      </span>
+                      <input
+                        type="number"
+                        min={0}
+                        value={row.days}
+                        onChange={(e) => patch(row.key, "days", e.target.value)}
+                        className={input}
+                      />
+                    </label>
+                  </div>
+                ) : null,
+              )}
+            </div>
+          </section>
+        )}
+
+        {view === "prices" && (
         <form
           onSubmit={doCreate}
           className="brut-shadow mt-8 border-[3px] border-foreground bg-card p-5"
@@ -327,8 +428,9 @@ function AdminPage() {
             <Plus className="size-4" /> {t("admin.add")}
           </button>
         </form>
+        )}
 
-        {groups.map((group) => {
+        {view === "prices" && groups.map((group) => {
           const groupRows = rows.filter((r) => r.kind === group.kind);
           if (!groupRows.length) return null;
           return (
@@ -405,7 +507,8 @@ function AdminPage() {
             </section>
           );
         })}
-      </main>
+        </main>
+      </div>
     </div>
   );
 }

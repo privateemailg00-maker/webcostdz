@@ -180,9 +180,31 @@ function QuestionWizard() {
     if (hydrated && slug && questions.length === 0 && !failed && !busy.current) void loadNext();
   }, [hydrated, slug, questions.length, failed, loadNext]);
 
-  if (!hydrated || (!questions.length && !failed)) {
-    return <LoadingState label={t("q.loading")} />;
+  if (!hydrated) return <LoadingState label={t("q.loading")} />;
+
+  if (!questions.length && !failed) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <SiteHeader />
+        <main className="relative mx-auto w-full max-w-2xl px-5 pt-12 pb-24">
+          <div className="flex items-center justify-between font-mono text-[11px] font-bold tracking-widest uppercase">
+            <span>{t("q.counter", { current: 1, total: ADAPTIVE_MAX })}</span>
+            <span className="text-primary">{businessName}</span>
+          </div>
+          <div className="mt-3 h-4 w-full border-[3px] border-foreground bg-card">
+            <div className="h-full w-[6%] bg-primary" />
+          </div>
+          <div className="brut-shadow mt-8 flex flex-col items-center gap-4 border-[3px] border-foreground bg-card p-10 text-center">
+            <Loader2 className="size-8 animate-spin text-primary" />
+            <p className="font-mono text-[13px] font-bold tracking-wide uppercase">
+              {t("q.gen.1")}
+            </p>
+          </div>
+        </main>
+      </div>
+    );
   }
+
 
   if (!questions.length) {
     return (
@@ -261,8 +283,10 @@ function QuestionWizard() {
   };
 
   if (submitting) return <LoadingState label={t("q.calculating")} />;
-  if (loadingNext && step === questions.length - 1)
-    return <LoadingState label={t("q.loading")} />;
+
+  const generating = loadingNext && step === questions.length - 1;
+  const answeredCount = questions.filter((q) => (answers[q.id] ?? []).length > 0).length;
+  const genLabel = t(`q.gen.${(answeredCount % 6) + 1}` as never);
 
   return (
     <div className="min-h-screen bg-background text-foreground">
@@ -280,6 +304,17 @@ function QuestionWizard() {
           />
         </div>
 
+        {generating ? (
+          <motion.div
+            key="generating"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="brut-shadow mt-8 flex flex-col items-center gap-4 border-[3px] border-foreground bg-card p-10 text-center"
+          >
+            <Loader2 className="size-8 animate-spin text-primary" />
+            <p className="font-mono text-[13px] font-bold tracking-wide uppercase">{genLabel}</p>
+          </motion.div>
+        ) : (
         <AnimatePresence mode="wait">
           <motion.div
             key={current.id}
@@ -335,11 +370,12 @@ function QuestionWizard() {
             </div>
           </motion.div>
         </AnimatePresence>
+        )}
 
         <div className="mt-7 flex items-center justify-between gap-3">
           <button
             type="button"
-            disabled={step === 0}
+            disabled={step === 0 || generating}
             onClick={() => setStep(step - 1)}
             className="inline-flex items-center gap-2 border-[3px] border-foreground bg-card px-5 py-3 text-sm font-bold uppercase disabled:opacity-40"
           >

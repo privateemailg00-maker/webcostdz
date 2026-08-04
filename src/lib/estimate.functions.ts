@@ -12,7 +12,7 @@ export type Question = {
   weight: number;
   category: string;
   help?: string;
-  constKey?: "backend" | "speed";
+  constKey?: "backend" | "speed" | "domain" | "deploy";
   optionKeys?: string[];
 };
 
