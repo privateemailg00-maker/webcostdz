@@ -269,6 +269,18 @@ const fr: Dict = {
   "biz.empty": "Aucun résultat. Essayez un autre mot ou choisissez « Activité personnalisée ».",
 
   "q.loading": "Génération des questions pour votre activité…",
+  "q.gen.1": "Génération des questions pour votre activité…",
+  "q.gen.2": "Analyse de votre réponse pour affiner la suite…",
+  "q.gen.3": "Nous cadrons votre projet selon vos réponses…",
+  "q.gen.4": "Recherche des fonctionnalités nécessaires…",
+  "q.gen.5": "Presque terminé, encore une question…",
+  "q.gen.6": "Derniers détails avant l'estimation…",
+  "admin.nav.prices": "Prix",
+  "admin.nav.common": "Fonctionnalités courantes",
+  "admin.nav.title": "Tableau de bord",
+  "admin.common.title": "Prix des fonctionnalités courantes",
+  "admin.common.hint": "Modifiez le prix et la durée des fonctionnalités les plus demandées.",
+
   "q.calculating": "Calcul de votre estimation…",
   "q.fail.title": "Impossible de créer votre questionnaire",
   "q.fail.text": "Veuillez réessayer dans un instant.",
