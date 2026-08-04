@@ -114,6 +114,18 @@ const en: Dict = {
   "biz.empty": "No match. Try another word, or pick “Custom Business”.",
 
   "q.loading": "Generating questions for your business…",
+  "q.gen.1": "Generating questions for your business…",
+  "q.gen.2": "Analyzing your answer to ask something sharper…",
+  "q.gen.3": "Scoping your project from what you told us…",
+  "q.gen.4": "Looking for the features your site needs…",
+  "q.gen.5": "Almost there, one more question coming…",
+  "q.gen.6": "Wrapping up the last details before pricing…",
+  "admin.nav.prices": "Prices",
+  "admin.nav.common": "Common features",
+  "admin.nav.title": "Dashboard",
+  "admin.common.title": "Common feature prices",
+  "admin.common.hint": "Edit the price and duration of the most requested features.",
+
   "q.calculating": "Calculating your estimate…",
   "q.fail.title": "We couldn't build your questionnaire",
   "q.fail.text": "Please try again in a moment.",
