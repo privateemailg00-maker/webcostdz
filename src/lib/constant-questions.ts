@@ -9,12 +9,14 @@ export type ConstQuestion = {
   optionKeys: string[];
   weight: number;
   category: string;
-  constKey: "backend" | "speed";
+  constKey: "backend" | "speed" | "domain" | "deploy";
 };
 
 type Pack = {
   backend: { category: string; question: string; help: string; options: string[] };
   speed: { category: string; question: string; help: string; options: string[] };
+  domain: { category: string; question: string; help: string; options: string[] };
+  deploy: { category: string; question: string; help: string; options: string[] };
 };
 
 const PACKS: Record<Lang, Pack> = {
@@ -38,6 +40,26 @@ const PACKS: Record<Lang, Pack> = {
         "مستعجل — أقصى سرعة ممكنة (+50%)",
       ],
     },
+    domain: {
+      category: "النطاق والاستضافة",
+      question: "هل لديك اسم نطاق (Domain) خاص بموقعك؟",
+      help: "اسم النطاق هو عنوان موقعك على الإنترنت مثل «monsite.dz». إذا لم يكن لديك واحد، يمكننا شراءه وإعداده لك.",
+      options: [
+        "لدي نطاق جاهز بالفعل",
+        "أحتاج شراء نطاق جديد وإعداده",
+        "لست متأكداً — انصحوني",
+      ],
+    },
+    deploy: {
+      category: "النشر والاستضافة",
+      question: "من سيتولى نشر الموقع واستضافته وصيانته؟",
+      help: "النشر هو رفع الموقع على الإنترنت ليصبح متاحاً للزوار، والاستضافة هي المساحة التي يعمل عليها الموقع. يمكننا تولي كل ذلك نيابة عنك أو تسليمك الملفات لتنشرها بنفسك.",
+      options: [
+        "تولوا أنتم النشر والاستضافة والصيانة",
+        "لدي استضافة خاصة، انشروا عليها فقط",
+        "سأتولى النشر بنفسي، سلّموني الملفات",
+      ],
+    },
   },
   fr: {
     backend: {
@@ -59,6 +81,26 @@ const PACKS: Record<Lang, Pack> = {
         "Urgent — vitesse maximale (+50 %)",
       ],
     },
+    domain: {
+      category: "Domaine",
+      question: "Avez-vous déjà un nom de domaine pour votre site ?",
+      help: "Le nom de domaine est l'adresse de votre site, par exemple « monsite.dz ». Si vous n'en avez pas, nous pouvons l'acheter et le configurer pour vous.",
+      options: [
+        "J'ai déjà un nom de domaine",
+        "J'ai besoin d'acheter et configurer un domaine",
+        "Je ne sais pas — conseillez-moi",
+      ],
+    },
+    deploy: {
+      category: "Mise en ligne",
+      question: "Qui va mettre le site en ligne, l'héberger et le maintenir ?",
+      help: "La mise en ligne rend le site accessible aux visiteurs, et l'hébergement est l'espace sur lequel il fonctionne. Nous pouvons tout gérer, ou vous livrer les fichiers.",
+      options: [
+        "Gérez la mise en ligne, l'hébergement et la maintenance",
+        "J'ai déjà un hébergement, déployez-y simplement",
+        "Je m'en occupe moi-même, livrez-moi les fichiers",
+      ],
+    },
   },
   en: {
     backend: {
@@ -78,6 +120,26 @@ const PACKS: Record<Lang, Pack> = {
         "Standard — no extra cost",
         "Fast — shorter timeline (+25%)",
         "Urgent — maximum speed (+50%)",
+      ],
+    },
+    domain: {
+      category: "Domain",
+      question: "Do you already have a domain name for your website?",
+      help: "A domain name is your website's address, like 'mysite.dz'. If you don't have one, we can buy and set it up for you.",
+      options: [
+        "I already have a domain",
+        "I need a new domain bought and set up",
+        "Not sure — advise me",
+      ],
+    },
+    deploy: {
+      category: "Deployment",
+      question: "Who should deploy, host and maintain the website?",
+      help: "Deployment is putting the site online so visitors can reach it; hosting is the space it runs on. We can handle all of it, or hand you the files.",
+      options: [
+        "You handle deployment, hosting and maintenance",
+        "I have hosting already — just deploy there",
+        "I'll deploy it myself, just hand over the files",
       ],
     },
   },
@@ -107,6 +169,28 @@ export function constantQuestions(lang: Lang): ConstQuestion[] {
       help: pack.speed.help,
       options: pack.speed.options,
       optionKeys: ["standard", "fast", "urgent"],
+    },
+    {
+      id: 3,
+      type: "radio",
+      weight: 1,
+      constKey: "domain",
+      category: pack.domain.category,
+      question: pack.domain.question,
+      help: pack.domain.help,
+      options: pack.domain.options,
+      optionKeys: ["has_domain", "needs_domain", "unsure_domain"],
+    },
+    {
+      id: 4,
+      type: "radio",
+      weight: 1,
+      constKey: "deploy",
+      category: pack.deploy.category,
+      question: pack.deploy.question,
+      help: pack.deploy.help,
+      options: pack.deploy.options,
+      optionKeys: ["full_service", "own_hosting", "self_deploy"],
     },
   ];
 }
