@@ -1,4 +1,4 @@
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
@@ -10,7 +10,7 @@ import {
   adminStatus,
   type AdminPriceRow,
 } from "@/lib/admin.functions";
-import { SiteHeader } from "@/components/site-chrome";
+import { LanguageSwitcher, SiteHeader, ThemeToggle } from "@/components/site-chrome";
 import { useI18n } from "@/lib/i18n";
 import { localizeFeature } from "@/lib/i18n/content";
 import {
