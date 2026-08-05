@@ -134,7 +134,7 @@ export function SiteHeader() {
           <LanguageSwitcher />
           <ThemeToggle />
           <Link
-            to="/onboarding"
+            to="/business"
             className="hidden items-center border-[3px] border-foreground bg-foreground px-4 py-2 font-mono text-xs font-bold tracking-widest text-background uppercase transition-transform hover:-translate-x-[2px] hover:-translate-y-[2px] hover:shadow-[4px_4px_0_0_var(--color-primary)] sm:inline-flex"
           >
             {t("nav.start")}
@@ -154,7 +154,7 @@ export function SiteFooter() {
           © {new Date().getFullYear()} {t("footer.rights")}
         </p>
         <div className="flex gap-5">
-          <Link to="/onboarding" className="border-b-[3px] border-primary pb-0.5">
+          <Link to="/business" className="border-b-[3px] border-primary pb-0.5">
             {t("footer.estimate")}
           </Link>
           <a href="mailto:hello@webcostdz.com" className="border-b-[3px] border-primary pb-0.5">

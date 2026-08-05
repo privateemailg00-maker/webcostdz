@@ -12,7 +12,6 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ResultsRouteImport } from './routes/results'
 import { Route as QuestionsRouteImport } from './routes/questions'
-import { Route as OnboardingRouteImport } from './routes/onboarding'
 import { Route as BusinessRouteImport } from './routes/business'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -30,11 +29,6 @@ const ResultsRoute = ResultsRouteImport.update({
 const QuestionsRoute = QuestionsRouteImport.update({
   id: '/questions',
   path: '/questions',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OnboardingRoute = OnboardingRouteImport.update({
-  id: '/onboarding',
-  path: '/onboarding',
   getParentRoute: () => rootRouteImport,
 } as any)
 const BusinessRoute = BusinessRouteImport.update({
@@ -57,7 +51,6 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
-  '/onboarding': typeof OnboardingRoute
   '/questions': typeof QuestionsRoute
   '/results': typeof ResultsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -66,7 +59,6 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
-  '/onboarding': typeof OnboardingRoute
   '/questions': typeof QuestionsRoute
   '/results': typeof ResultsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -76,7 +68,6 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
   '/business': typeof BusinessRoute
-  '/onboarding': typeof OnboardingRoute
   '/questions': typeof QuestionsRoute
   '/results': typeof ResultsRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
@@ -87,25 +78,16 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/business'
-    | '/onboarding'
     | '/questions'
     | '/results'
     | '/sitemap.xml'
   fileRoutesByTo: FileRoutesByTo
-  to:
-    | '/'
-    | '/admin'
-    | '/business'
-    | '/onboarding'
-    | '/questions'
-    | '/results'
-    | '/sitemap.xml'
+  to: '/' | '/admin' | '/business' | '/questions' | '/results' | '/sitemap.xml'
   id:
     | '__root__'
     | '/'
     | '/admin'
     | '/business'
-    | '/onboarding'
     | '/questions'
     | '/results'
     | '/sitemap.xml'
@@ -115,7 +97,6 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
   BusinessRoute: typeof BusinessRoute
-  OnboardingRoute: typeof OnboardingRoute
   QuestionsRoute: typeof QuestionsRoute
   ResultsRoute: typeof ResultsRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
@@ -142,13 +123,6 @@ declare module '@tanstack/react-router' {
       path: '/questions'
       fullPath: '/questions'
       preLoaderRoute: typeof QuestionsRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/onboarding': {
-      id: '/onboarding'
-      path: '/onboarding'
-      fullPath: '/onboarding'
-      preLoaderRoute: typeof OnboardingRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/business': {
@@ -179,7 +153,6 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
   BusinessRoute: BusinessRoute,
-  OnboardingRoute: OnboardingRoute,
   QuestionsRoute: QuestionsRoute,
   ResultsRoute: ResultsRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
@@ -187,13 +160,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}
