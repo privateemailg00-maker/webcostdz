@@ -82,8 +82,12 @@ function AdminPage() {
   });
 
   const loadRows = async () => {
-    const res = await list({});
-    setRows(res.rows);
+    try {
+      const res = await list({});
+      setRows(res.rows);
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : "Error");
+    }
   };
 
   const doCreate = async (e: React.FormEvent) => {
