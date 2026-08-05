@@ -84,7 +84,7 @@ function Landing() {
 
               <div className="mt-8 flex flex-col gap-4 sm:flex-row sm:items-center">
                 <Link
-                  to="/onboarding"
+                  to="/business"
                   className="brut-shadow-stamp group inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-foreground px-7 py-3.5 text-sm font-bold tracking-wide text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
                 >
                   {t("home.cta.primary")}
@@ -242,7 +242,7 @@ function Landing() {
               {t("home.cta.final")}
             </h3>
             <Link
-              to="/onboarding"
+              to="/business"
               className="brut-shadow-stamp mt-6 inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-foreground px-8 py-4 text-sm font-bold tracking-wide text-background uppercase transition-transform hover:-translate-x-[3px] hover:-translate-y-[3px]"
             >
               {t("home.cta.primary")} <ArrowRight className="rtl-flip size-4" />
