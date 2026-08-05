@@ -10,43 +10,43 @@ export type PricingRule = {
 
 /** Server-owned pricing engine. The AI never decides prices. Currency: DZD. */
 export const PRICING_RULES: PricingRule[] = [
-  { key: "landing_page", label: "Landing Page", price: 120, days: 2, weight: 1 },
-  { key: "authentication", label: "Authentication", price: 180, days: 3, weight: 2 },
-  { key: "admin_dashboard", label: "Admin Dashboard", price: 350, days: 5, weight: 3 },
-  { key: "cms", label: "CMS", price: 250, days: 4, weight: 3 },
-  { key: "blog", label: "Blog", price: 120, days: 2, weight: 1 },
-  { key: "booking_system", label: "Booking System", price: 280, days: 4, weight: 3 },
-  { key: "reservation_calendar", label: "Reservation Calendar", price: 200, days: 3, weight: 2 },
-  { key: "online_payments", label: "Online Payments", price: 220, days: 3, weight: 3 },
-  { key: "inventory_management", label: "Inventory Management", price: 400, days: 6, weight: 4 },
-  { key: "pos_system", label: "POS System", price: 500, days: 8, weight: 5 },
-  { key: "order_management", label: "Order Management", price: 220, days: 3, weight: 3 },
-  { key: "notifications", label: "Notifications", price: 100, days: 2, weight: 1 },
-  { key: "analytics_dashboard", label: "Analytics Dashboard", price: 180, days: 3, weight: 2 },
-  { key: "file_upload", label: "File Upload", price: 100, days: 1, weight: 1 },
-  { key: "customer_accounts", label: "Customer Accounts", price: 150, days: 2, weight: 2 },
-  { key: "reviews", label: "Reviews", price: 80, days: 1, weight: 1 },
-  { key: "chat", label: "Chat", price: 150, days: 2, weight: 2 },
-  { key: "multilingual", label: "Multilingual", price: 180, days: 3, weight: 2 },
-  { key: "seo", label: "SEO", price: 120, days: 2, weight: 1 },
-  { key: "contact_form", label: "Contact Form", price: 50, days: 1, weight: 1 },
-  { key: "google_maps", label: "Google Maps", price: 50, days: 1, weight: 1 },
-  { key: "multiple_branches", label: "Multiple Branches", price: 300, days: 4, weight: 3 },
-  { key: "api_integration", label: "API Integration", price: 250, days: 4, weight: 3 },
+  { key: "landing_page", label: "Landing Page", price: 6000, days: 2, weight: 1 },
+  { key: "authentication", label: "Authentication", price: 9000, days: 3, weight: 2 },
+  { key: "admin_dashboard", label: "Admin Dashboard", price: 15000, days: 5, weight: 3 },
+  { key: "cms", label: "CMS", price: 12000, days: 4, weight: 3 },
+  { key: "blog", label: "Blog", price: 6000, days: 2, weight: 1 },
+  { key: "booking_system", label: "Booking System", price: 12000, days: 4, weight: 3 },
+  { key: "reservation_calendar", label: "Reservation Calendar", price: 9000, days: 3, weight: 2 },
+  { key: "online_payments", label: "Online Payments", price: 9000, days: 3, weight: 3 },
+  { key: "inventory_management", label: "Inventory Management", price: 18000, days: 6, weight: 4 },
+  { key: "pos_system", label: "POS System", price: 24000, days: 8, weight: 5 },
+  { key: "order_management", label: "Order Management", price: 9000, days: 3, weight: 3 },
+  { key: "notifications", label: "Notifications", price: 6000, days: 2, weight: 1 },
+  { key: "analytics_dashboard", label: "Analytics Dashboard", price: 9000, days: 3, weight: 2 },
+  { key: "file_upload", label: "File Upload", price: 3000, days: 1, weight: 1 },
+  { key: "customer_accounts", label: "Customer Accounts", price: 6000, days: 2, weight: 2 },
+  { key: "reviews", label: "Reviews", price: 3000, days: 1, weight: 1 },
+  { key: "chat", label: "Chat", price: 6000, days: 2, weight: 2 },
+  { key: "multilingual", label: "Multilingual", price: 9000, days: 3, weight: 2 },
+  { key: "seo", label: "SEO", price: 6000, days: 2, weight: 1 },
+  { key: "contact_form", label: "Contact Form", price: 3000, days: 1, weight: 1 },
+  { key: "google_maps", label: "Google Maps", price: 3000, days: 1, weight: 1 },
+  { key: "multiple_branches", label: "Multiple Branches", price: 12000, days: 4, weight: 3 },
+  { key: "api_integration", label: "API Integration", price: 12000, days: 4, weight: 3 },
 ];
 
 /** Backend approach — chosen by the client, never by the AI. */
 export const BACKEND_RULES: PricingRule[] = [
-  { key: "managed_backend", label: "No-code / Managed Backend", price: 150, days: 2, weight: 1 },
-  { key: "custom_backend", label: "Custom Coded Backend", price: 450, days: 6, weight: 4 },
+  { key: "managed_backend", label: "No-code / Managed Backend", price: 6000, days: 2, weight: 1 },
+  { key: "custom_backend", label: "Custom Coded Backend", price: 18000, days: 6, weight: 4 },
 ];
 
 export const OPTIONAL_ADDONS = [
-  { key: "mobile_app", label: "Mobile App", price: 2000 },
-  { key: "ai_chatbot", label: "AI Chatbot", price: 500 },
-  { key: "sms_notifications", label: "SMS Notifications", price: 250 },
-  { key: "loyalty_program", label: "Loyalty Program", price: 400 },
-  { key: "advanced_seo", label: "Advanced SEO Package", price: 350 },
+  { key: "mobile_app", label: "Mobile App", price: 30000, days: 10 },
+  { key: "ai_chatbot", label: "AI Chatbot", price: 9000, days: 3 },
+  { key: "sms_notifications", label: "SMS Notifications", price: 3000, days: 1 },
+  { key: "loyalty_program", label: "Loyalty Program", price: 9000, days: 3 },
+  { key: "advanced_seo", label: "Advanced SEO Package", price: 6000, days: 2 },
 ];
 
 export const FEATURE_KEYS = PRICING_RULES.map((r) => r.key);
@@ -61,7 +61,7 @@ export type SpeedChoice = (typeof SPEED_KEYS)[number];
 export const MIN_DAYS = 7;
 export const SPEED_SETTINGS: Record<SpeedChoice, { surcharge: number; timeFactor: number }> = {
   standard: { surcharge: 0, timeFactor: 1 },
-  fast: { surcharge: 0.25, timeFactor: 0.7 },
+  fast: { surcharge: 0.25, timeFactor: 0.6 },
   urgent: { surcharge: 0.5, timeFactor: 0.5 },
 };
 
