@@ -236,10 +236,18 @@ function AdminPage() {
 
   return (
     <div className="min-h-screen bg-background text-foreground">
-      <SiteHeader />
-      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 pt-12 pb-24 md:flex-row">
-        <aside className="md:w-56 md:shrink-0">
-          <nav className="brut-shadow border-[3px] border-foreground bg-card">
+      <div className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-5 pt-8 pb-24 md:flex-row">
+        <aside className="md:w-60 md:shrink-0">
+          <nav className="brut-shadow border-[3px] border-foreground bg-card md:sticky md:top-8">
+            <Link
+              to="/"
+              className="flex items-center gap-2 border-b-[3px] border-foreground px-4 py-4 text-sm font-extrabold uppercase"
+            >
+              <span className="inline-flex size-7 items-center justify-center border-[3px] border-foreground bg-primary text-primary-foreground">
+                <Lock className="size-3.5" />
+              </span>
+              WebCostDz
+            </Link>
             <p className="border-b-[3px] border-foreground px-4 py-3 font-mono text-[10px] font-bold tracking-[0.2em] uppercase">
               {t("admin.nav.title")}
             </p>
@@ -251,20 +259,25 @@ function AdminPage() {
                 key={id}
                 type="button"
                 onClick={() => setView(id)}
-                className={`flex w-full items-center gap-2 border-b-[3px] border-foreground px-4 py-3 text-start text-xs font-bold uppercase last:border-b-0 ${
+                className={`flex w-full items-center gap-2 border-b-[3px] border-foreground px-4 py-3 text-start text-xs font-bold uppercase ${
                   view === id ? "bg-foreground text-background" : "bg-card"
                 }`}
               >
                 <Icon className="size-4" /> {label}
               </button>
             ))}
-          </nav>
-        </aside>
-
-        <main className="min-w-0 flex-1">
-        <div className="flex flex-wrap items-center justify-between gap-3">
-          <h1 className="text-2xl font-extrabold tracking-tight uppercase">{t("admin.title")}</h1>
-          <div className="flex gap-3">
+            <button
+              type="button"
+              onClick={doSave}
+              disabled={busy}
+              className="flex w-full items-center gap-2 border-b-[3px] border-foreground bg-primary px-4 py-3 text-start text-xs font-bold text-primary-foreground uppercase disabled:opacity-50"
+            >
+              <Save className="size-4" /> {t("admin.save")}
+            </button>
+            <div className="flex items-center gap-2 border-b-[3px] border-foreground p-3">
+              <LanguageSwitcher />
+              <ThemeToggle />
+            </div>
             <button
               type="button"
               onClick={async () => {
@@ -272,20 +285,18 @@ function AdminPage() {
                 setAuthed(false);
                 setRows([]);
               }}
-              className="border-[3px] border-foreground bg-card px-4 py-2 text-xs font-bold uppercase"
+              className="w-full px-4 py-3 text-start text-xs font-bold uppercase"
             >
               {t("admin.logout")}
             </button>
-            <button
-              type="button"
-              onClick={doSave}
-              disabled={busy}
-              className="brut-shadow-stamp inline-flex items-center gap-2 border-[3px] border-foreground bg-foreground px-5 py-2 text-xs font-bold text-background uppercase disabled:opacity-50"
-            >
-              <Save className="size-4" /> {t("admin.save")}
-            </button>
-          </div>
+          </nav>
+        </aside>
+
+        <main className="min-w-0 flex-1">
+        <div className="flex flex-wrap items-center justify-between gap-3">
+          <h1 className="text-2xl font-extrabold tracking-tight uppercase">{t("admin.title")}</h1>
         </div>
+
 
         {view === "common" && (
           <section className="brut-shadow mt-8 border-[3px] border-foreground bg-card">
