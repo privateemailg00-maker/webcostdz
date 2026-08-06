@@ -288,7 +288,20 @@ function QuestionWizard() {
     }
   };
 
-  if (submitting) return <LoadingState label={t("q.calculating")} />;
+  if (submitting)
+    return (
+      <CalculatingState
+        title={t("calc.title")}
+        business={businessName ?? ""}
+        steps={[t("calc.step.1"), t("calc.step.2"), t("calc.step.3"), t("calc.step.4")]}
+        items={questions
+          .map((q) => (answers[q.id] ?? []).join(", "))
+          .filter(Boolean)
+          .flatMap((a) => a.split(", "))
+          .filter(Boolean)
+          .slice(0, 10)}
+      />
+    );
 
   const generating = loadingNext && step === questions.length - 1;
   const answeredCount = questions.filter((q) => (answers[q.id] ?? []).length > 0).length;
@@ -549,5 +562,84 @@ function LoadingState({ label }: { label: string }) {
         </div>
       </div>
     </>
+  );
+}
+
+function CalculatingState({
+  title,
+  business,
+  steps,
+  items,
+}: {
+  title: string;
+  business: string;
+  steps: string[];
+  items: string[];
+}) {
+  const [active, setActive] = useState(0);
+  const [shown, setShown] = useState(0);
+
+  useEffect(() => {
+    const a = setInterval(() => setActive((v) => Math.min(v + 1, steps.length - 1)), 2200);
+    const b = setInterval(() => setShown((v) => Math.min(v + 1, items.length)), 550);
+    return () => {
+      clearInterval(a);
+      clearInterval(b);
+    };
+  }, [steps.length, items.length]);
+
+  return (
+    <div className="min-h-screen bg-background text-foreground">
+      <SiteHeader />
+      <main className="mx-auto w-full max-w-2xl px-5 pt-12 pb-24">
+        <div className="flex items-center justify-between font-mono text-[11px] font-bold tracking-widest uppercase">
+          <span>{title}</span>
+          <span className="text-primary">{business}</span>
+        </div>
+
+        <div className="brut-shadow mt-4 border-[3px] border-foreground bg-card p-7">
+          <div className="space-y-3">
+            {steps.map((s, i) => (
+              <div
+                key={s}
+                className={`flex items-center gap-3 border-[3px] border-foreground px-4 py-3 font-mono text-[12px] font-bold tracking-wide uppercase ${
+                  i < active
+                    ? "bg-foreground text-background"
+                    : i === active
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-muted-foreground"
+                }`}
+              >
+                <span className="flex size-5 shrink-0 items-center justify-center border-[3px] border-current">
+                  {i < active ? (
+                    <Check className="size-3" />
+                  ) : i === active ? (
+                    <Loader2 className="size-3 animate-spin" />
+                  ) : null}
+                </span>
+                {s}
+              </div>
+            ))}
+          </div>
+
+          {items.length > 0 && (
+            <div className="mt-6 flex flex-wrap gap-2 border-t-[3px] border-dashed border-foreground pt-5">
+              <AnimatePresence>
+                {items.slice(0, shown).map((it) => (
+                  <motion.span
+                    key={it}
+                    initial={{ opacity: 0, y: 8, scale: 0.95 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    className="border-[3px] border-foreground bg-background px-3 py-1.5 font-mono text-[11px] font-bold tracking-wide uppercase"
+                  >
+                    {it}
+                  </motion.span>
+                ))}
+              </AnimatePresence>
+            </div>
+          )}
+        </div>
+      </main>
+    </div>
   );
 }
