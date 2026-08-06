@@ -26,7 +26,7 @@ export type Analysis = {
 };
 
 export const ADAPTIVE_MAX = 8;
-const ADAPTIVE_MIN = 5;
+const ADAPTIVE_MIN = ADAPTIVE_MAX;
 
 const nextInput = z.object({
   slug: z.string().min(1).max(60),

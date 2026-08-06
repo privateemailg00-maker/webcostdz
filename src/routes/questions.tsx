@@ -234,7 +234,7 @@ function QuestionWizard() {
   const isConst = Boolean(current.constKey);
   const aiIndex = isConst ? aiQuestions.length : aiQuestions.findIndex((q) => q.id === current.id);
   const constIndex = isConst ? constQuestions.findIndex((q) => q.id === current.id) : -1;
-  const aiTotal = questionsDone ? aiQuestions.length : Math.max(aiQuestions.length + 1, 5);
+  const aiTotal = Math.max(ADAPTIVE_MAX, aiQuestions.length);
   const estimatedTotal = aiTotal;
   const progress = ((aiIndex + (isConst || selected.length ? 1 : 0)) / aiTotal) * 100;
   const isLast = questionsDone && step === questions.length - 1;
