@@ -70,11 +70,11 @@ function Landing() {
                 {t("home.badge")}
               </div>
 
-              <h1 className="mt-6 text-[2.6rem] leading-[1.05] font-extrabold tracking-tight uppercase sm:text-6xl lg:text-[4rem]">
-                {t("home.title.a")}{" "}
+              <h1 className="mt-6 text-[2.6rem] leading-[1.3] font-extrabold tracking-tight uppercase sm:text-6xl lg:text-[4rem]">
+                                {t("home.title.a")}{" "}
                 <span className="relative inline-block">
-                  <span className="relative z-10">{t("home.title.b")}</span>
-                  <span className="absolute right-0 -bottom-1 left-0 h-3 bg-primary opacity-90 sm:-bottom-2 sm:h-5" />
+                  <span className="relative leading-7 z-10">{t("home.title.b")}</span>
+                  <span className="absolute  right-0 -bottom-1 left-0 h-3 bg-primary opacity-90 sm:-bottom-2 sm:h-5" />
                 </span>
               </h1>
 
