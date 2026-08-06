@@ -299,16 +299,40 @@ function QuestionWizard() {
       <SiteHeader />
       <main className="relative mx-auto w-full max-w-2xl px-5 pt-12 pb-24">
         <div className="flex items-center justify-between font-mono text-[11px] font-bold tracking-widest uppercase">
-          <span>{t("q.counter", { current: step + 1, total: estimatedTotal })}</span>
+          <span>
+            {isConst
+              ? current.category
+              : t("q.counter", { current: Math.min(aiIndex + 1, estimatedTotal), total: estimatedTotal })}
+          </span>
           <span className="text-primary">{businessName}</span>
         </div>
-        <div className="mt-3 h-4 w-full border-[3px] border-foreground bg-card">
-          <motion.div
-            className="h-full bg-primary"
-            animate={{ width: `${Math.max(6, progress)}%` }}
-            transition={{ type: "spring", stiffness: 120, damping: 20 }}
-          />
-        </div>
+        {isConst ? (
+          <div className="mt-3 flex items-stretch gap-2">
+            {constQuestions.map((q, i) => (
+              <div
+                key={q.id}
+                className={`flex-1 border-[3px] border-foreground px-2 py-2 text-center font-mono text-[9px] font-bold tracking-widest uppercase ${
+                  i < constIndex
+                    ? "bg-foreground text-background"
+                    : i === constIndex
+                      ? "bg-primary text-primary-foreground"
+                      : "bg-card text-muted-foreground"
+                }`}
+              >
+                {q.category}
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div className="mt-3 h-4 w-full border-[3px] border-foreground bg-card">
+            <motion.div
+              className="h-full bg-primary"
+              animate={{ width: `${Math.max(6, progress)}%` }}
+              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+            />
+          </div>
+        )}
+
 
         {generating ? (
           <motion.div
