@@ -288,7 +288,20 @@ function QuestionWizard() {
     }
   };
 
-  if (submitting) return <LoadingState label={t("q.calculating")} />;
+  if (submitting)
+    return (
+      <CalculatingState
+        title={t("calc.title")}
+        business={businessName ?? ""}
+        steps={[t("calc.step.1"), t("calc.step.2"), t("calc.step.3"), t("calc.step.4")]}
+        items={questions
+          .map((q) => (answers[q.id] ?? []).join(", "))
+          .filter(Boolean)
+          .flatMap((a) => a.split(", "))
+          .filter(Boolean)
+          .slice(0, 10)}
+      />
+    );
 
   const generating = loadingNext && step === questions.length - 1;
   const answeredCount = questions.filter((q) => (answers[q.id] ?? []).length > 0).length;
