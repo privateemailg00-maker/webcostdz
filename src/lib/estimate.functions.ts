@@ -26,7 +26,7 @@ export type Analysis = {
 };
 
 export const ADAPTIVE_MAX = 8;
-const ADAPTIVE_MIN = 5;
+const ADAPTIVE_MIN = ADAPTIVE_MAX;
 
 const nextInput = z.object({
   slug: z.string().min(1).max(60),
@@ -53,12 +53,17 @@ export const getNextQuestion = createServerFn({ method: "POST" })
       enough?: boolean;
       question?: Omit<Question, "id"> | null;
     }>(
-      `You are an experienced software business analyst interviewing a non-technical client, ONE question at a time.
+      `You are an experienced software business analyst interviewing a non-technical client IN ALGERIA, ONE question at a time.
 Return JSON only: {"enough": boolean, "question": {"question": string, "type": "radio"|"checkbox", "options": string[], "weight": number (1-5), "category": string} | null}.
 Rules:
 - Ask exactly ONE new question that follows logically from the previous answers and helps scope and price the website.
 - Never repeat or rephrase a question already asked. Build on the answers given.
 - Keep it simple, multiple choice, and only ask things that affect pricing or scope.
+- ALGERIA CONTEXT IS MANDATORY: only mention services, payment methods and habits that actually exist in Algeria.
+  Allowed payment options: cash on delivery (الدفع عند الاستلام), CIB / Edahabia card via SATIM, CCP / BaridiMob, bank transfer, payment on site.
+  Allowed delivery/logistics: Yalidine, ZR Express, Maystro Delivery, Algérie Poste (EMS), the client's own delivery, pickup from the shop (58 wilayas).
+  NEVER mention: Apple Pay, Google Pay, PayPal, Stripe, Amazon, Uber, DoorDash, FedEx/UPS/DHL local delivery, Shopify Payments, or any service unavailable in Algeria.
+- Use Algerian wilayas/communes when asking about coverage areas, and DZD when money is mentioned.
 - Do NOT ask about backend technology, hosting platform, delivery speed, deadline or budget — those are asked separately at the end.
 - Set "enough" to true (and "question" to null) only when you already have enough information to scope the project.
 - At least ${ADAPTIVE_MIN} questions must be asked before "enough" can be true; a maximum of ${ADAPTIVE_MAX} questions total.
