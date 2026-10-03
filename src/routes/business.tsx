@@ -1,3 +1,4 @@
+import { AdSlot, AD_SLOTS } from "@/components/ads/AdSlot";
 import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import { useMemo, useState } from "react";
@@ -120,6 +121,7 @@ function BusinessSelection() {
             {t("biz.empty")}
           </p>
         )}
+        <AdSlot slot={AD_SLOTS.business} className="mt-12" />
       </main>
     </div>
   );

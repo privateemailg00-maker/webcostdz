@@ -25,6 +25,8 @@ type State = {
   step: number;
   result: EstimateResult | null;
   leadSent: boolean;
+  unlockedId: string | null;
+  setUnlocked: (id: string) => void;
   recent: { id: string; businessName: string; min: number; max: number; at: number }[];
   setOnboarded: () => void;
   selectBusiness: (slug: string, name: string) => void;
@@ -53,6 +55,8 @@ export const useEstimateStore = create<State>()(
       step: 0,
       result: null,
       leadSent: false,
+      unlockedId: null,
+      setUnlocked: (unlockedId) => set({ unlockedId }),
       recent: [],
       setOnboarded: () => set({ onboarded: true }),
       selectBusiness: (slug, businessName) =>
