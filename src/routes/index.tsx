@@ -1,3 +1,4 @@
+import { AdSlot, AD_SLOTS } from "@/components/ads/AdSlot";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { motion } from "motion/react";
 import {
@@ -251,6 +252,7 @@ function Landing() {
         </section>
       </main>
 
+      <div className="px-5 py-6"><AdSlot slot={AD_SLOTS.home} /></div>
       <SiteFooter />
     </div>
   );

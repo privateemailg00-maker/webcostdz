@@ -23,6 +23,8 @@ import { SiteFooter, SiteHeader } from "@/components/site-chrome";
 import { useI18n } from "@/lib/i18n";
 import { formatPrice } from "@/lib/pricing";
 import { localizeFeature } from "@/lib/i18n/content";
+import { RewardedGate } from "@/components/ads/RewardedGate";
+import { AdSlot, AD_SLOTS } from "@/components/ads/AdSlot";
 
 export const Route = createFileRoute("/results")({
   head: () => ({
@@ -57,7 +59,7 @@ type LeadValues = z.infer<ReturnType<typeof makeLeadSchema>>;
 
 function Results() {
   const navigate = useNavigate();
-  const { result, leadSent, setLeadSent, reset, questions, answers, setStep } = useEstimateStore();
+  const { result, leadSent, setLeadSent, reset, questions, answers, setStep, unlockedId, setUnlocked } = useEstimateStore();
   const [hydrated, setHydrated] = useState(false);
   const sendLead = useServerFn(submitLead);
   const { t, lang } = useI18n();
@@ -80,6 +82,18 @@ function Results() {
         <div className="mx-auto max-w-md px-5 py-32 text-center font-mono text-xs font-bold tracking-widest uppercase">
           {t("res.loading")}
         </div>
+      </div>
+    );
+  }
+
+  if (unlockedId !== result.id) {
+    return (
+      <div className="min-h-screen bg-background text-foreground">
+        <SiteHeader />
+        <main className="mx-auto w-full max-w-5xl px-5 pt-12 pb-24">
+          <RewardedGate lang={lang} onReward={() => setUnlocked(result.id)} />
+        </main>
+        <SiteFooter />
       </div>
     );
   }
@@ -163,6 +177,8 @@ function Results() {
             </motion.div>
           ))}
         </div>
+
+        <AdSlot slot={AD_SLOTS.results} className="mt-6" />
 
         <Section title={t("res.summary")} icon={Sparkles}>
           <p className="font-mono text-[13px] leading-relaxed text-muted-foreground">
