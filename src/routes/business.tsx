@@ -121,6 +121,7 @@ function BusinessSelection() {
             {t("biz.empty")}
           </p>
         )}
+        <AdSlot slot={AD_SLOTS.business} className="mt-12" />
       </main>
     </div>
   );
