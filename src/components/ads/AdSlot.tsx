@@ -46,8 +46,10 @@ export function AdSlot({ slot, className = "" }: { slot?: string; className?: st
   );
 }
 
+const DEFAULT_SLOT = "3478144726";
+
 export const AD_SLOTS = {
-  home: import.meta.env.VITE_ADSENSE_SLOT_HOME as string | undefined,
-  business: import.meta.env.VITE_ADSENSE_SLOT_BUSINESS as string | undefined,
-  results: import.meta.env.VITE_ADSENSE_SLOT_RESULTS as string | undefined,
+  home: (import.meta.env.VITE_ADSENSE_SLOT_HOME as string | undefined) || DEFAULT_SLOT,
+  business: (import.meta.env.VITE_ADSENSE_SLOT_BUSINESS as string | undefined) || DEFAULT_SLOT,
+  results: (import.meta.env.VITE_ADSENSE_SLOT_RESULTS as string | undefined) || DEFAULT_SLOT,
 };
