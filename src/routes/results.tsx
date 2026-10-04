@@ -112,7 +112,7 @@ function Results() {
   };
 
   const pageUrl = typeof window !== "undefined" ? window.location.origin : "https://webcostdz.lovable.app";
-  const shareText = `I estimated the price of my desired website in WebCost DZ and it's for only ${formatPrice(pricing.maximumPrice)} DZD, try it now!`;
+  const shareText = `I estimated the price of my desired website in WebCost DZ and it's for only ${formatPrice(pricing.maximumPrice)}, try it now!`;
 
   const shareOn = (network: "facebook" | "x") => {
     const u = encodeURIComponent(pageUrl);
