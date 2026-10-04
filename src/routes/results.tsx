@@ -13,7 +13,7 @@ import {
   Layers,
   Pencil,
   Plus,
-  Share2,
+  Facebook,
   Sparkles,
   Wallet,
 } from "lucide-react";
@@ -111,21 +111,20 @@ function Results() {
     }
   };
 
-  const share = async () => {
-    const text = t("res.shareText", {
-      business: businessName,
-      min: formatPrice(pricing.minimumPrice),
-      max: formatPrice(pricing.maximumPrice),
-      duration: durationLabel,
-    });
+  const pageUrl = typeof window !== "undefined" ? window.location.origin : "https://webcostdz.lovable.app";
+  const shareText = `I estimated the price of my desired website in WebCost DZ and it's for only ${formatPrice(pricing.maximumPrice)} DZD, try it now!`;
+
+  const shareOn = (network: "facebook" | "x") => {
+    const u = encodeURIComponent(pageUrl);
+    const txt = encodeURIComponent(shareText);
+    const url =
+      network === "facebook"
+        ? `https://www.facebook.com/sharer/sharer.php?u=${u}&quote=${txt}`
+        : `https://x.com/intent/tweet?text=${txt}&url=${u}`;
     try {
-      if (navigator.share) await navigator.share({ title: "WebCostDz estimate", text });
-      else {
-        await navigator.clipboard.writeText(text);
-        toast.success(t("res.shared"));
-      }
+      window.open(url, "_blank", "noopener,noreferrer,width=600,height=600");
     } catch {
-      /* user cancelled */
+      /* popup blocked */
     }
   };
 
@@ -400,10 +399,20 @@ function Results() {
           <div className="mt-6 flex flex-col justify-center gap-3 sm:flex-row">
             <button
               type="button"
-              onClick={share}
-              className="inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-card px-6 py-3 text-sm font-bold uppercase"
+              onClick={() => shareOn("facebook")}
+              className="inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-card px-6 py-3 text-sm font-bold uppercase hover:bg-foreground hover:text-background"
             >
-              <Share2 className="size-4" /> {t("res.share")}
+              <Facebook className="size-4" /> Facebook
+            </button>
+            <button
+              type="button"
+              onClick={() => shareOn("x")}
+              className="inline-flex items-center justify-center gap-2 border-[3px] border-foreground bg-card px-6 py-3 text-sm font-bold uppercase hover:bg-foreground hover:text-background"
+            >
+              <svg viewBox="0 0 24 24" fill="currentColor" className="size-4" aria-hidden="true">
+                <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+              </svg>
+              X
             </button>
             <button
               type="button"
